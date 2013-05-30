@@ -1,0 +1,125 @@
+html {
+	/* IE10 Consumer Preview */ 
+	background-image: -ms-linear-gradient(top, #FFFFFF 0%, #D5E6EE 100%);
+
+	/* Mozilla Firefox */ 
+	background-image: -moz-linear-gradient(top, #FFFFFF 0%, #D5E6EE 100%);
+
+	/* Opera */ 
+	background-image: -o-linear-gradient(top, #FFFFFF 0%, #D5E6EE 100%);
+
+	/* Webkit (Safari/Chrome 10) */ 
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, #D5E6EE));
+
+	/* Webkit (Chrome 11+) */ 
+	background-image: -webkit-linear-gradient(top, #FFFFFF 0%, #D5E6EE 100%);
+
+	/* W3C Markup, IE10 Release Preview */ 
+	background-image: linear-gradient(to bottom, #FFFFFF 0%, #D5E6EE 100%);
+	
+	background-repeat: no-repeat;
+	
+	margin-bottom: 0px;
+
+	white-space:nowrap;
+
+	background-color: #D5E6EE;
+
+	min-width: 100%;
+}
+
+body{
+	min-width: 100%;
+	
+	overflow-x: hidden;
+}
+
+h1 {
+				background-color: #24b6df;
+				color: #FFFFFF;
+				position: relative;
+				left: -10px;
+				top: -20px;
+				white-space:nowrap;
+				overflow: hidden;
+				min-width: 100%;
+				border-bottom: 1px solid #ddd;
+				box-shadow: 0px 2px 1px rgba(0, 0, 0, 0.4);
+}
+#arrows{
+				margin-left: 10%;
+}
+
+#bigboxtitle {
+				color: #24b6df;
+			}			
+.centered { 
+				text-align: center;
+			}
+#deviceselect{
+				position: relative;
+				top: -30px;
+}
+#phaseboxa {
+				color: #000000;
+				border-color: #000000;
+			}
+#phaseboxb {
+				color: #FF0000;
+				border-color: #FF0000;
+			}
+#phaseboxc {
+				color: #0000FF;
+				border-color: #0000FF;
+			}
+#oldbutton{
+				margin-left: 20px;
+				margin-top: 10px;
+}
+.phaseallcheck {
+				margin-left: 27px;
+				margin-top: 1%;
+			}
+.harmallcheck {
+				margin-left: 27px;
+				margin-top: 1%;
+			}
+.combinecheckbox {
+				margin-top:    5px;
+				margin-bottom: 5px;
+				margin-left:   25px;
+			}
+.warn {
+				color: #FF0000;
+				font-size: 12;
+			}
+#timefield {
+				margin-left: 20px;
+				display: none;
+				width: 50%;
+			}
+#timefield2{
+				margin-left: 20px;
+				display: none;
+				width: 50%;
+			}
+.viewchoice {
+				position: relative;
+				margin-left: 20px;
+				top: -10px;
+				width: 50%;
+			}
+.atext {
+				color: #000000;
+			}
+.btext {
+				color: #FF0000;
+			}
+.ctext {
+				color: #0000FF;
+			}
+#selectfield{
+				display: none;
+				margin-left: 20px;
+				width: 50%;
+}

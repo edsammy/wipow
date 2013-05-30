@@ -1,0 +1,11 @@
+AuthUserFile /var/www/html/ece/projects/power/members/.htdigest
+AuthGroupFile /dev/null
+AuthType Digest
+AuthName URPower
+<Limit GET POST>
+   require user arduino
+</Limit>
+<limit PUT>
+  deny from all
+</limit>
+

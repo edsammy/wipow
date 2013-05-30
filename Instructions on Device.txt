@@ -1,0 +1,34 @@
+Steps to setup, configure, calibrate, and install a measurement device:
+1. Determine the range of voltages and currents to be measured.
+2. Solder the PCB board with appropriate resistors for the circuit to be measured. REMEMBER, all analog inputs are differential and offsetted by 1.024V. Therefore the MAXIMUM AMPLITUDE SHOULD NOT EXCEED 1.024V!
+3. Upload the script "SpiUartTerminal.ino" onto an Arduino connected to a WiFly Shield and use the serial monitor to input the commands listend in the "WiFly Commands.txt".
+4. Configure and Calibrate Arduino Code (Use one of the previous set of codes as a base)
+	4.1 First go to "initial_register_writes.ino" and configure the configuration registers. Of note are the conversion coefficient registers (0x014, 0x016, 0x018). Change these register values to accomadate the circuit to be measured. See datasheet for explanations of these registers.
+	4.2 Set all gain registers to 1 (0x4000 is interpreted as 1 in these registers).
+	4.3 Upload the code to a finished device.
+	4.4 Use the serial monitor to get the IP address of the WiFly shield when the device starts up.
+	4.5 Add this new device onto the website (see instructions for the website for this part).
+	4.6 Use the device to measure known values, read and record the measurements from the website.
+	4.7 Divide the actual value by the device's measurement and multiply it by 16384(0x4000, or 2^14). This is the gain for the particular measurement. Input this to the gain registers. (see datasheet for more details)
+	4.8 Repeat 4.6 and 4.7 for all the measurements, or do it all at the same time. Repeat as necessary to calibrate the device.
+5. Once the device is configured and calibrated, it is ready to be installed. To get the IP address incase it changes, simply connect the USB and go to the serial monitor in the Arduino program (opening serial monitor restarts the Arduino)
+6. With the IP address of the device, pick a name for the device (one word). There are 6 files in the website that needs to be modified.
+	6.1 Add the name of the device to the list in "index.html" and "members/index.php"
+	6.2 Add the name of the device to the whitelist in "members/pinclude/devicelist.php"
+	6.3 Modify the name of the device and table in "members/pinclude/insert_new_database.php" to create a new table for the new device in the MySQL database
+	6.4 Modify the files "members/pinclude/arduino_insert.php" and "members/pinclude/arduino_read.php" with the new device's database table name (should be same as device name) and IP
+7. Test it out!
+
+
+Brief description of the Arduino Code:
+"chip_test_mega.ino" - The main script. It contains the setup and loop functions. Setup resets the Maxim chip, calls the startup functions for SPI communication, calls initial_register_writes(), and commands the WiFly to connect. The loop then waits until WiFly sends Arduino something through the SPI(which should ideally be when the server requests data from the device). Arduino then calls normalread() and harmread(), which reads the measurement registers of the Maxim chip and sends them out through the WiFly. The loop then ends with commands for the WiFly to terminate the connection.
+"initial_register_writes.ino" - The script which contains all configuration and calibration registers of the Maxim Chip. It is called after the initial reset of the Maxim chip when Arduino starts. This is where calibration and configuration of the device is done, by changing these crucial register values.
+"maxim_read.ino" and "maxim_write.ino" - These scripts are the functions that read from and write to registers in the Maxim Chip.
+"asciitoint.ino" - This script contains the helper function for maxim_read() and maxim_write(). It allows those functions to be called by passing easily-readable strings. This eliminates the need for the programmer to do conversions (because otherwise, you would have to call those functions with integer representations of the binary, or binary values themselves).
+"harmread" and "normalread" - These scripts and functions reads measurement registers from the Maxim chip and sends them out through WiFly. normalread() is anything that does not have harmonic measurements, and harmread() is only measurements dealing with harmonics. These functions can be combined or be completely redone once selective data readings are implemented.
+
+For the Cogen Plant Monitor, MAX Voltage going into device should not exceed 380Vrms, MAX current going through the actual CTs should not exceed 4Arms.
+For the Hopeman Bldg Monitor, MAX voltage going into device should not exceed 380Vrms, MAX current going through the actual CTs should not exceed 20Arms.
+
+
+Any questions? Email me at kafung91@hotmail.com

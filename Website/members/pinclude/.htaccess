@@ -1,0 +1,5 @@
+AuthGroupFile /dev/null
+<limit GET PUT POST>
+  deny from all
+</limit>
+

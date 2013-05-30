@@ -1,0 +1,17 @@
+#include <SPI.h>
+
+void setup() {
+  delay(3000);
+  Serial.begin(9600);
+  Serial.println("starting SPI");
+  SPI.begin();
+  SPI.setBitOrder(MSBFIRST);
+  SPI.setClockDivider(SPI_CLOCK_DIV64);
+  SPI.setDataMode(SPI_MODE0);  
+}
+
+void loop() {
+  Serial.println("go");
+    SPI.transfer(0x00);
+    //delay(1000);
+}

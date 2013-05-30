@@ -1,0 +1,45 @@
+<!DOCTYPE html> 
+<html>
+	<head>
+		<title>Wireless Power Monitor Interface</title>
+		<link href="index.css" rel="stylesheet" type="text/css" />
+		<script language="javascript">
+function OnSubmitForm(){
+	if(document.pressed == 'Go Live!')
+		{document.myform.action = "live.php";}
+	return true;
+} 
+
+		</script>
+		
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	</head>
+	
+	<body>
+		<h1>&nbsp;&nbsp;&nbsp;&nbsp;Data Display From Wireless Power Monitor Devices&nbsp;</h1>
+				
+		<form id="bigform" name="myform" onsubmit="return OnSubmitForm();" method="post" target="_blank">
+		<div id="deviceselect">
+			<a href='./definitions.html' target='_blank'>Click here to see definitions for each measurement</a><br><br>
+			<b>Please select device to monitor:</b>
+			<select name="SITE" size=1>
+				<option>Hopeman</option>
+				<option>Cogen</option>
+			</select>
+		</div>
+		
+		
+		<div class="viewchoice">
+		<fieldset>
+			<legend id="bigboxtitle"><b>View LIVE data or view recorded data and schedule data collection</b></legend>
+			<input type="submit" name="submit" onclick="document.pressed=this.value" value="Go Live!" /><em class="warn">&nbsp;&nbsp;* Live display shows all values in tabular form by default.</em>
+			<br>
+			&nbsp;&nbsp;or
+			<br>
+			<a href="http://www.ece.rochester.edu/projects/power/members/">View recorded data or schedule data collection (autherization required)</a>
+		</fieldset>
+		</div>
+		
+		</form>
+	</body>
+</html>

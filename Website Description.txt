@@ -1,0 +1,42 @@
+The website is written mainly in PHP and JavaScript. MySQL is the database used to store data. It is on the University server: enterprise.seas.rochester.edu  under the directory "/var/www/html/ece/projects/power".
+
+Currently, there are two sections: the "members" directory under "power" and the rest, which is just under "power". All sensitive information (passwords to MySQL, directory authentication password for HTML, whitelists) are under the directory "power/members/pinclude". KEEP THAT DIRECTORY AND FILES UNDER IT SECURE!!!
+
+Only "members" can currently schedule data collection and view recorded data. Currently, anyone can go to the live view. This separation is accomplished by the .htaccess and .htdigest files in the directories. These are server configuration files to control access. You may and should change how access is granted for future needs. For example, if some random person is on the live view 24/7, then we should restrict access to avoid overloading the database. Currently, I believe no one would be interested enough to mess with our system.
+
+Website files and their importance/function:
+index.html (index.css, index.js) - homepage of the website
+live.php (live.css) - used for the Live View, uses AJAX calls to update
+livepull.php - called by the AJAX calls from "live.php" to get new data
+device_call.php - the main script that uses "wget" to actually connect to the measurement device to get new data and stores it into the MySQL database
+members/create_schedule_template.php - the template used by "schedule.php" to create a file to be called at a user specified time to start data collection
+members/index.php (index.css, index.js) - the homepage of the members website, where all functions are accessible
+members/old.php (old.css, old.js) - used for Viewing Recorded Data, also allows user to download requested data
+members/schedule.php - used for creating scheduled data collection, also informs the user whether the scheduling is successful or not
+members/pinclude/arduino_insert.php - important values used to connect to the MySQL database with write permissions, should be only linked by "device_call.php"
+members/pinclude/arduino_read.php - important values used to connect to the MySQl database with only read permission, linked by "livepull.php" and "old.php"
+members/pinclude/devicelist.php - whitelist of device names, for security
+members/pinclude/database_create.sql - file that has the MySQL commands to create a new MySQL database, should be kept safe as well, reference only
+members/pinclude/insert_new_database.php - same as "database_create.sql", but is executable as a PHP file. Modify and use this to create a new MySQL database for a new device. Should be kept safe as well!
+definitions.html - measurement value definitions to inform the end user
+"power/tmp" directory - where temporary files used by other scripts are stored. The view recorded data also puts the requested data into here so the end user can download it
+"power/flot" directory - the flot plotting JavaScript library for live view
+"power/calendar" directory - used for the interactive calendar the end user can use to select dates
+"power/members/pinclude" directory - KEEP THIS DIRECTORY SECURE!!! All sensitive information (passwords to MySQL, directory authentication password for HTML, whitelists) are in files inside this directory
+"power/members/schedules" directory - where the modified copies of "create_schedule_template.php" created by "schedule.php" should go to and be called from (* currently everything is going to and working under "power/tmp")
+"power/members/tmp" directory - intended to be same as "power/tmp" but for scripts under "members" (*currently "power/tmp" is used instead)
+
+
+Theory of operation (to see exactly what goes on in these scripts, read the comments in the scripts):
+All data from the device is stored in the MySQL database, whether the data requested is from the live view or the scheduled collection. The data from the device is expected to be a MySQL INSERT statement, which the code checks for legitimacy (to ensure nothing malicious) and then inject directly into the MySQL database.
+
+The end user goes onto the website by going to "www.ece.rochester.edu/projects/power", which displays "index.html" under the "power" directory. "index.css" and "index.js" are support files linked by "index.html". From here, the only thing the user can do is go to the live view.
+
+Live view, or "live.php" is written mostly in JavaScript. First, it receives a HTTP form POST variable called "SITE" from "index.html". This is the name of the device to get data from. Then the JavaScript starts. The script uses a technique/technologies called AJAX to continuously pull data from the server without having the user refresh the page manually to accomplish that "live update" functionality. To easily use AJAX functions, a JavaScript library called jQuery is used by linking the library directly from the jQuery site. The AJAX function calls the script "livepull.php" and passes it the device name it needs to get data from. "livepull.php" then calls "device_call.php" with the device name. "device_call.php" is the actual script which gets the data from the device and stores it into the database. It first links to the "arduino_insert.php" under "members/pinclude" to know the device's IP address and the relevent MySQL information. It then calls the server program "wget" to the device IP address and retrieves the data. It then connects to the MySQL database and stores the receivd data. Now that "device_call.php" is finished we return to "livepull.php", which after finished calling device_call(), links to "arduino_read.php" under "members/pinclude" and connects to the MySQL database using the relevent information under "arduino_read.php" to get the most recent data to return the AJAX call first started by "live.php". The returned data is in the format: "name|value!name|value!...", where "name" is the measurement name, as well as the name of the div id that the value goes into for display in the html. Once "livepull.php" returns this data string, the AJAX call is complete. The JavaScript in "live.php" then parses this reurned data string and updates the HTML of the user's live view interface to display new data. The AJAX call is repeated afterwards to accomplish the live view.
+
+Scheduled data collection works in similar ways to live view, except without AJAX and doing everything within the server itself. First, the user selects the appropriate times. Once the submit button is pressed, the requested datetimes are sent to "schedule.php". "schedule.php" then uses the datetimes to modify the script "create_schedule_template.php" and creates a new file. It then uses a server program called "at" to have the server excuted that newly created file at the user specified time. That newly created file continuously calls "device_call.php" to get data from the device and store it into the database. The newly created file self-terminates at the user specified time, ending the scheduled data collection.
+
+Viewing recorded data is done by the script "old.php". It takes in the selection arguments of the end user and connects to the MySQL database to get the data. The data is then processed and displayed onto an HTML table, as well as graphed using the server program "gnuplot". This is all done in PHP.
+
+
+If you have any questions about the server side stuff, you can contact John Simonson of CNG: john.simonson@rochester.edu

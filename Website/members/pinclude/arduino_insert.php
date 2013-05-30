@@ -1,0 +1,16 @@
+<?php
+if($table==="hopeman"){
+	define("DBH","dbs3.seas.rochester.edu");
+	define("DBU","arduinoadm");
+	define("DBP","a506dac29c2a0745970de40ccdb99244");
+	define("DBN","arduino");
+	define("Arduino_IP","10.4.136.202");
+}
+if($table==="cogen"){
+	define("DBH","dbs3.seas.rochester.edu");
+	define("DBU","arduinoadm");
+	define("DBP","a506dac29c2a0745970de40ccdb99244");
+	define("DBN","arduino");
+	define("Arduino_IP","10.4.131.252");
+}
+?>

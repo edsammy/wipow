@@ -1,0 +1,16 @@
+These commands should be configured in the WiFly module beforehand. Use the "SpiUartTerminal.ino" as instructed in "Instructions.txt" to input these commands. These commands could also be loaded as part of the main Arduino code for the device. But since the WiFly module needs to be only configured once (you can and should save the state of the WiFly module), I did not bother to add the extra code into the main device program. All commands can be shortened to their first letter, except "set, get, etc...".
+See the WiFly module user manual "WiFlyGSX-um2 (User Manual and Command Reference).pdf" for more information on these commands. These commands are in no way complete, but are the ones tested and used currently, which works and is sufficient. Additional commands may be needed to improve on the performance.
+
+
+
+List of commands currently used (and short description):
+
+set w a 2 (WPA1-TKIP)
+set w s Roving1 (SSID)
+set w j 1 (auto join stored SSID: Roving1)
+set w p --- (password of Roving1)
+set w c 0 (for scanning all channels)
+set w e - (1 for external antenna, 0 for chip antenna)
+set ip localport 80 (80 for html)
+set ip dchp 1 (use DCHP)
+set c r 0 (no *Hello* at TCP connection, without this, the *Hello* string at the beginning messes up the intended data transfer format)

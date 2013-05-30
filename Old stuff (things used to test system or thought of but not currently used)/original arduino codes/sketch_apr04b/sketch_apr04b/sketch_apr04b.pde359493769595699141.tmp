@@ -1,0 +1,32 @@
+#include <SPI.h>
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(2,OUTPUT);
+  pinMode(3,INPUT);
+  Serial.println("starting SPI");
+  SPI.begin();
+  SPI.setBitOrder(MSBFIRST);
+  SPI.setClockDivider(SPI_CLOCK_DIV64);
+  SPI.setDataMode(SPI_MODE0);
+  delay(1000);  
+}
+
+void loop() {
+  /*digitalWrite(2,HIGH); // deactivate slave selection
+  delay(100);
+  digitalWrite(2,LOW); // activate slave selection*/
+  pinMode(3,OUTPUT);
+  digitalWrite(3,LOW); // reset Maxim
+  int response = 0;
+  boolean done = false;
+  while(!done) {
+    response = SPI.transfer(0x00);
+    Serial.println(response,HEX);
+    if(response!=0xFF)
+      done = true;
+  }
+  /*response = SPI.transfer(0x00);
+  Serial.println(response,HEX);
+  delay(5000);*/
+}
