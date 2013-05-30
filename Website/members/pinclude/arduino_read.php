@@ -11,6 +11,6 @@ if($table==="cogen"){
 	define("DBU","arduino");
 	define("DBP","read_arduino");
 	define("DBN","arduino");
-	define("Arduino_IP","10.4.131.252");
+	define("Arduino_IP","10.4.159.133");
 }
 ?>
