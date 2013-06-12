@@ -4,7 +4,7 @@ if($table==="hopeman"){
 	define("DBU","arduinoadm");
 	define("DBP","a506dac29c2a0745970de40ccdb99244");
 	define("DBN","arduino");
-	define("Arduino_IP","10.4.136.202");
+	define("Arduino_IP","10.4.143.237");
 }
 if($table==="cogen"){
 	define("DBH","dbs3.seas.rochester.edu");

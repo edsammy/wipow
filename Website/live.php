@@ -75,7 +75,7 @@ if (isset($_POST['submit'])) {
 
 				var options = {
 					xaxis:{
-						mode: "time", timeformat: "%H:%M:%S"
+						mode: "time", timeformat: "%H:%M"
 					},
 					selection: {mode: "x"},
 					grid: { hoverable: true, mouseActiveRadius: 5},
