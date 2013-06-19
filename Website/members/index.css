@@ -5,6 +5,7 @@ html {
 	/* Mozilla Firefox */ 
 	background-image: -moz-linear-gradient(top, #FFFFFF 0%, #D5E6EE 100%);
 
+	.repeat{width:10px;}
 	/* Opera */ 
 	background-image: -o-linear-gradient(top, #FFFFFF 0%, #D5E6EE 100%);
 
@@ -29,10 +30,10 @@ html {
 }
 
 body{
-	min-width: 100%;
-	
-	overflow-x: hidden;
+
 }
+.formcontain{float:right;width:100%;height:300px;position:absolute;overflow:hidden;background: #000;margin:0 auto;}
+
 
 h1 {
 				background-color: #24b6df;

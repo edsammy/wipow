@@ -27,6 +27,8 @@ html {
 
 	min-width: 100%;
 }
+#main{width:100%;height:100%;margin-left:auto;margin-right:auto;float:right;}
+
 
 body{
 	min-width: 100%;
@@ -60,9 +62,15 @@ h1 {
 				box-shadow: 0px 2px 1px rgba(0, 0, 0, 0.4);
 }
 
+#field{border-radius:5px;}
+
+.formcontain{margin-left:auto;margin-right:auto;width:100%;height:500px;border:0px #000 solid;}
+
+.fieldcontent{margin-left:auto;margin-right:auto;width:600px;height:300px;border:0px #000 solid;}
 
 #bigboxtitle {
 				color: #24b6df;
+				
 			}			
 
 #deviceselect{

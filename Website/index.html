@@ -3,6 +3,7 @@
 	<head>
 		<title>Wireless Power Monitor Interface</title>
 		<link href="index.css" rel="stylesheet" type="text/css" />
+		<link rel="shortcut icon" href="powericon.ico">
 		<script language="javascript">
 function OnSubmitForm(){
 	if(document.pressed == 'Go Live!')
@@ -17,29 +18,40 @@ function OnSubmitForm(){
 	
 	<body>
 		<h1>&nbsp;&nbsp;&nbsp;&nbsp;Data Display From Wireless Power Monitor Devices&nbsp;</h1>
+		
+		<section id="main">
+		<div class="formcontain">
+			<form id="bigform" name="myform" onsubmit="return OnSubmitForm();" method="post" target="_blank">
+			<div id="deviceselect">
+				<a href="definitions.html" target="_new" onclick="javascript:void window.open('definitions.html','1371063848022','width=700,height=320,toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0');return false;">Click here to see definitions for each measurement</a><br><br>
+				<b>Please select device to monitor:</b>
+				<select name="SITE" size=1>
+					<option>Hopeman</option>
+					<option>Cogen</option>
+				</select>
+			</div>
+			
+			
+			<div class="viewchoice">
+			<fieldset id="field">
 				
-		<form id="bigform" name="myform" onsubmit="return OnSubmitForm();" method="post" target="_blank">
-		<div id="deviceselect">
-			<a href="definitions.html" target="_new" onclick="javascript:void window.open('definitions.html','1371063848022','width=700,height=320,toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0');return false;">Click here to see definitions for each measurement</a><br><br>
-			<b>Please select device to monitor:</b>
-			<select name="SITE" size=1>
-				<option>Hopeman</option>
-				<option>Cogen</option>
-			</select>
+					<legend id="bigboxtitle"><b>View LIVE data or view recorded data and schedule data collection</b></legend>
+				<div class="fieldcontent">
+					<div class="fieldleft">
+						<input type="submit" name="submit" onclick="document.pressed=this.value" value="Go Live!" /><em class="warn">&nbsp;&nbsp;* Live display shows all values in tabular form by default.</em>
+						<br>
+						&nbsp;&nbsp;or
+						<br>
+						<a href="http://www.ece.rochester.edu/projects/power/members/">View recorded data or schedule data collection (autherization required)</a>
+					</div>
+					<div class="fieldright">
+					</div>
+				</div>
+			</fieldset>
+			</div>
+			
+			</form>
 		</div>
-		
-		
-		<div class="viewchoice">
-		<fieldset>
-			<legend id="bigboxtitle"><b>View LIVE data or view recorded data and schedule data collection</b></legend>
-			<input type="submit" name="submit" onclick="document.pressed=this.value" value="Go Live!" /><em class="warn">&nbsp;&nbsp;* Live display shows all values in tabular form by default.</em>
-			<br>
-			&nbsp;&nbsp;or
-			<br>
-			<a href="http://www.ece.rochester.edu/projects/power/members/">View recorded data or schedule data collection (autherization required)</a>
-		</fieldset>
-		</div>
-		
-		</form>
+		</section>
 	</body>
 </html>

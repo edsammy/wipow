@@ -4,13 +4,13 @@ if($table==="hopeman"){
 	define("DBU","arduino");
 	define("DBP","read_arduino");
 	define("DBN","arduino");
-	define("Arduino_IP","10.4.136.202");
+	define("Arduino_IP","10.4.143.237");
 }
 if($table==="cogen"){
 	define("DBH","dbs3.seas.rochester.edu");
 	define("DBU","arduino");
 	define("DBP","read_arduino");
 	define("DBN","arduino");
-	define("Arduino_IP","10.4.159.133");
+	define("Arduino_IP","10.4.158.215");
 }
 ?>

@@ -1,4 +1,12 @@
-<?php 
+<html>
+	<head>
+	<title>congratulations sir!</title>
+	<link rel="stylesheet" href="../misc.css">
+	</head>
+	<body>
+	hello
+
+	<?php 
 // Creates a PHP script that calls the function in "device_call.php" to retrieve data. Also creates a crontab to run that script at the specified time.
 
 echo "<!DOCTYPE html>";
@@ -90,3 +98,6 @@ if (isset($_POST['schedule'])) {
 }	
 echo "</html>";
 ?>
+
+	</body>
+</html>

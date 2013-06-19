@@ -7,6 +7,7 @@ include('../calendar/classes/tc_calendar.php');	// Required for the interactive 
 	<head>
 		<title>Wireless Power Monitor version 1.0</title>
 		<link href="../calendar/calendar.css" rel="stylesheet" type="text/css" />
+		<link rel="shortcut icon" href="../powericon.ico">
 		<link href="index.css" rel="stylesheet" type="text/css" />
 		<script language="javascript" src="../calendar/calendar.js"></script>
 		<script language="javascript" src="index.js"></script>
@@ -19,7 +20,7 @@ include('../calendar/classes/tc_calendar.php');	// Required for the interactive 
 				
 		<form id="bigform" name="myform" onsubmit="return OnSubmitForm();" method="post" target="_blank">
 		<div id="deviceselect">
-			<a href='../definitions.html' target='_blank'>Click here to see definitions for each measurement</a><br><br>
+			<a href="../definitions.html" target="_new" onclick="javascript:void window.open('../definitions.html','1371063848022','width=700,height=320,toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0');return false;">Click here to see definitions for each measurement</a><br><br>
 			<b>Please select device to monitor:</b>
 			<select name="SITE" size=1>
 				<option>Hopeman</option>
@@ -203,6 +204,9 @@ include('../calendar/classes/tc_calendar.php');	// Required for the interactive 
 						</td>
 					</tr>
 					
+					
+					
+					
 					<tr><td nowrap>End Date/Time: </td>
 						<td>
 							<?php
@@ -247,11 +251,74 @@ include('../calendar/classes/tc_calendar.php');	// Required for the interactive 
 							</select>
 						</td>
 					</tr>
+					
+					
+					<tr><td class="repeat">Repeat?: </td>
+						<td class="repeat">
+						<select name='REPEAT' size=1>
+							<option value="none">none</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+						</select> &nbsp;&nbsp;time(s) a&nbsp;&nbsp;
+						
+						<select name="REPEAT" size=1>
+							<option value="day">day</option>
+							<option value="week">week</option>
+							<option value="fortnight">fortnight</option>
+						</td>
+						
+					</tr>
+					
 			</table>
 			
-			<input type="submit" name="schedule" onclick="document.pressed=this.value" value="Submit Data Collection Request" />
+			
+			
+			
+			
+			
+	
+			<input type="submit" name="schedule" id="schedule" onclick="document.pressed=this.value" value="Submit Data Collection Request">
+			<script type="text/javascript">	
+			
+			
+			document.getElementById("schedule").onclick = function()
+			{
+			var EHOUR = document.getElementsByName("EHOURC")[0].value;
+			var SHOUR = document.getElementsByName("SHOURC")[0].value;
+			var ABS = Math.abs(EHOUR - SHOUR);
+			var sdate = document.getElementsByName("startdatecollect_day")[0].value;
+			var edate = document.getElementsByName("enddatecollect_day")[0].value;
+			
+			
+			if((ABS <6) && (edate == sdate))
+			{document.pressed=this.value;}
+			
+			else{alert("ERROR: maximum collection interval is 6 hours");return false;}
+			}
+			
+		</script>	
+
+			
+			</input>
+			
+			
+			
+			
+			
+			
+			
 			</fieldset>
+			
+		
+
+			
+			
 		</div>
+
+		
+		
+		
 		
 		<div id="selectfield">
 		<img id="arrows" border="0" src="../Down_Arrow_Icon.png" width="30" height="30">
@@ -377,4 +444,6 @@ include('../calendar/classes/tc_calendar.php');	// Required for the interactive 
 		</div>
 		</form>
 	</body>
+	
+	
 </html>
