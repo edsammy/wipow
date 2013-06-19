@@ -38,7 +38,7 @@ img {border: none;}
 
 #bigform{margin:0;position:absolute;height:50px;}
 
-.hidden{border:0;padding:0;background:transparent;margin-left:-12px;margin-top:0px;font-size:50px;font-family:tahoma, serif;text-align:center;opacity:0.8;}
+.hidden{border:0;padding:0;background:transparent;margin-left:-12px;margin-top:0px;font-size:50px;font-family:tahoma, serif;text-align:center;opacity:0.8;border:none;text-decoration:none;color:#000;}
 .hidden:hover{color:rgb(8, 106, 135);opacity:1;}
 .hidden1{border:0;padding:0;background:transparent;margin-left:0px;margin-top:0px;font-size:37px;font-family:tahoma, serif;text-align:left;text-align:center;opacity:0.8;border:none;text-decoration:none;color:#000;}
 .hidden1:hover{color:rgb(8, 106, 135);opacity:1;}

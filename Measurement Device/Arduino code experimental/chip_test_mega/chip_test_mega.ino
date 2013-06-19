@@ -52,18 +52,27 @@ long upper_read, lower_read;    // When calling MaximRead, it will update these 
 
 long response;  // byte by byte response of the SPI communication protocol with the MAXIM chip. (Used for maxim_write and maxim_read)
 
-int order;  // Used to indicate order of harmonic readings
-String c = "840";  // MAXIM virtual registry for harmonic current readings
-String v = "830";  // MAXIM virtual registry for harmonic voltage readings
+//***Select the data you want to collect, 1 means collect it, 0 means don't (refer to user_sel_read for data order)***
+String user_input="111111111111111111111111111111111111111111111111111111111";
+//String user_input="111111111111111111111111000000000000000000000000000000000";
 
-//***Future use for user_input from website***
-String user_input;
-
-const int norm_functs = 24;  // number of non-harmonic MAXIM measurements, used for user input parsing
+const int norm_functs = 24;  // number of non-harmonic MAXIM measurements (used for user input parsing)
 const int harm_functs = 33;   // number of harmonic MAXIM measurements
 const int total_functs = norm_functs + harm_functs;
 
 const int data_led = 8;  // Status LED to indicate data TX (v3)
+long timestamp, endtime;
+
+int lineCount = 0;
+String currLine;
+String ind = "content=";
+boolean done = false;
+
+char site[] = "eddiesamuels.com";
+char get[] = "GET /wipow/commands.txt HTTP/1.1";
+
+WiFlyClient client;
+
 
 ////////////////////////////////////////////////////////////////
 // The rest of the variables below are data holding variables.//
@@ -145,45 +154,62 @@ void setup() {
   Serial.println("Done!");
   
   delay(1000);
-  SpiSerial.write("$$$", 3);		// Go to CMD in WiFly
-  delay(500);
-    while(SpiSerial.available() > 0) {
-    Serial.write(SpiSerial.read());
-    delay(50);
-  }
-
-  SpiSerial.write("join", 4);		// Join the pre-set network "Roving1"
-  SpiSerial.write("\r", 1);			// ** Wifly is already set to auto-join "Roving1".
-  delay(3000);						//    This is just incase it doesn't.
-    while(SpiSerial.available() > 0) {
-    Serial.write(SpiSerial.read());
-    delay(50);
-  }
+//  SpiSerial.write("$$$", 3);		// Go to CMD in WiFly
+//  delay(500);
+//    while(SpiSerial.available() > 0) {
+//    Serial.write(SpiSerial.read());
+//    delay(50);
+//  }
+//
+//  SpiSerial.write("join", 4);		// Join the pre-set network "Roving1"
+//  SpiSerial.write("\r", 1);			// ** Wifly is already set to auto-join "Roving1".
+//  delay(3000);						//    This is just incase it doesn't.
+//    while(SpiSerial.available() > 0) {
+//    Serial.write(SpiSerial.read());
+//    delay(50);
+//  }
+//  
+//  SpiSerial.write("get i", 5);		// "get i" prints out ip settings of Wifly
+//  SpiSerial.write("\r", 1);			// This lets us see the IP of the WiFly in the network
+//  delay(1000);
+//  while(SpiSerial.available() > 0) {
+//    Serial.write(SpiSerial.read());
+//    delay(50);
+//  }
+//
+//  delay(2000);
+//  while(SpiSerial.available() > 0) { // Flushing out the "get i" lines
+//    Serial.write(SpiSerial.read());
+//  }
+//  delay(3000);
+//  while(SpiSerial.available() > 0) {
+//    Serial.write(SpiSerial.read());
+//  }
+//  
+//  SpiSerial.write("exit", 4);		 // Exit CMD mode
+//  SpiSerial.write("\r", 1);
+//  delay(1000);
+//  while(SpiSerial.available() > 0) { // Flush out remaining serial data from WiFly
+//    Serial.write(SpiSerial.read());
+//    delay(50);
+//  }
+  WiFly.reboot();
+  Serial.print("Getting user commands from web...");
+  parseHTML();
+  Serial.println("Done!");
   
-  SpiSerial.write("get i", 5);		// "get i" prints out ip settings of Wifly
-  SpiSerial.write("\r", 1);			// This lets us see the IP of the WiFly in the network
-  delay(1000);
-  while(SpiSerial.available() > 0) {
-    Serial.write(SpiSerial.read());
-    delay(50);
-  }
-
-  delay(2000);
-  while(SpiSerial.available() > 0) { // Flushing out the "get i" lines
-    Serial.write(SpiSerial.read());
-  }
-  delay(3000);
-  while(SpiSerial.available() > 0) {
-    Serial.write(SpiSerial.read());
-  }
-  
-  SpiSerial.write("exit", 4);		 // Exit CMD mode
-  SpiSerial.write("\r", 1);
-  delay(1000);
+  WiFly.sendCommand("join", false, "Associated!");
   while(SpiSerial.available() > 0) { // Flush out remaining serial data from WiFly
     Serial.write(SpiSerial.read());
     delay(50);
   }
+  String IP = WiFly.ip();
+  Serial.println(IP);
+  while(SpiSerial.available() > 0) { // Flush out remaining serial data from WiFly
+    Serial.write(SpiSerial.read());
+    delay(50);
+  }
+
   Serial.println("Ready for communication!");
 }
 
@@ -224,12 +250,18 @@ void loop() {
     delay(5);
   }
     digitalWrite(data_led, HIGH);
-    user_sel_read(user_input);	// This calls "user_sel_read.ino" and must pass a user_input parameter (String)
+    timestamp = millis();
+    user_sel_read();	// This calls "user_sel_read.ino" and must pass a user_input parameter (String)
     while (!MaximWrite("004", "0000")){}      // Clear the chip's DSP READY BIT so the chip can set it again when its DSP is ready.
     delay(500);  
     //SpiSerial.write(41);  // ")"
     //SpiSerial.write(59);  // ";"  To finish the MySQL statement that normalread was pushing out (IF "harmread()" IS DISABLED/COMMENTED OUT)
-  
+    
+    // Serial print total elapsed time to collect data
+    Serial.println();
+    Serial.print("Total DAQ time: ");
+    Serial.println(millis()-timestamp);
+    
     SpiSerial.write("$$$", 3);				// CMD mode of WiFly
     delay(300);
     while(SpiSerial.available() > 0) {
@@ -252,6 +284,7 @@ void loop() {
     Serial.write(SpiSerial.read());
     delay(5);
   }
+  
   
   digitalWrite(data_led, LOW);
   
@@ -384,3 +417,5 @@ for(int y=0;y<incomingdata;y++){
 delay(100);
 
 }		//////////// END OF LOOP /////////////
+
+

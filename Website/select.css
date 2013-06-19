@@ -1,0 +1,83 @@
+
+#userSelect{
+        width: 850px;
+        display:none;
+        padding: 30px;
+        background: #FFF;
+        border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
+        box-shadow: 0px 0px 4px rgba(0,0,0,0.7); -webkit-box-shadow: 0 0 4px rgba(0,0,0,0.7); -moz-box-shadow: 0 0px 4px rgba(0,0,0,0.7);
+        }
+
+#a, #b, #c, #other, #options{
+        float:left;
+        width: 200px;
+}
+ 
+fieldset{
+        border-radius:10px;
+        border-style:groove;
+        border-width:3px;
+      }
+ 
+.phaseboxa {
+				color: #000000;
+				border-color: #000000;
+        width:150px;
+        float: left;
+			}
+.phaseboxb {
+				color: #CD3535;
+				border-color: #CD3535;
+        width:150px;
+        float:left;
+			}
+.phaseboxc {
+				color: #086A87;
+				border-color: #086A87;
+        width:150px;
+        float: left;
+			}
+      
+.other{
+        color:#34A330;
+        border-color:#34A330;
+        width:200px;
+        float: left;
+        }
+        
+#optionset{
+        color:#FF9100;
+        border-color:#FF9100;
+        width: 200px;
+        float: left;
+      }
+      
+#btn{
+        float:left;
+        margin-top:60px;
+        width:230px;
+}
+
+
+#lean_overlay {
+    position: fixed;
+    z-index:100;
+    top: 0px;
+    left: 0px;
+    height:100%;
+    width:100%;
+    background: #000;
+    display: none;
+}
+
+.modal_close {
+position: absolute;
+top: 12px;
+right: 12px;
+display: block;
+width: 14px;
+height: 14px;
+background: url('images/modal_close.png');
+z-index: 2;
+}
+

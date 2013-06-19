@@ -23,6 +23,11 @@ class WiFlyDevice {
 	long getTime();
 
     const char * ip();
+    void reboot();
+    
+    boolean sendCommand(const char *command,
+                    boolean isMultipartCommand, // Has default value
+                    const char *expectedResponse); // Has default value
     
   private:
     SpiUartDevice& SPIuart;
@@ -52,13 +57,10 @@ class WiFlyDevice {
     //       they are first?
     void attemptSwitchToCommandMode();
     void switchToCommandMode();
-    void reboot();
+    //void reboot();
     void requireFlowControl();
     void setConfiguration(boolean adhocMode);
 	void setAdhocParams();
-    boolean sendCommand(const char *command,
-                        boolean isMultipartCommand, // Has default value
-                        const char *expectedResponse); // Has default value
     boolean sendCommand(const __FlashStringHelper *command,
                         boolean isMultipartCommand, // Has default value
                         const char *expectedResponse); // Has default value

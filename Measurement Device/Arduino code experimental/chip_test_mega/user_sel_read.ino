@@ -5,12 +5,18 @@
 //       PF									(See datasheet for LSBs)
 //       Voltage Phasors					(LSB is 1/100 or 0.01 degrees)
 
-void user_sel_read(String user_input){ 
+int order;  // Used to indicate order of harmonic readings
+boolean last;  // Used to indicate when the user selected inputs have reached the last one
+String c = "840";  // MAXIM virtual registry for harmonic current readings
+String v = "830";  // MAXIM virtual registry for harmonic voltage readings
+
+void user_sel_read(){ 
+  last = false;
   static void (*ptr[total_functs])() = {none,freq_r,volta_r,voltb_r,voltc_r,curra_r,currb_r,currc_r,currn_r,reala_r,realb_r,realc_r,reaca_r,reacb_r,reacc_r,appaa_r,appab_r,appac_r,pfa_r,pfb_r,pfc_r,pft_r,phaseab_r,phaseac_r,thda_r,cha1_r,cha2_r,cha3_r,cha4_r,cha5_r,vha1_r,vha2_r,vha3_r,vha4_r,vha5_r,thdb_r,chb1_r,chb2_r,chb3_r,chb4_r,chb5_r,vhb1_r,vhb2_r,vhb3_r,vhb4_r,vhb5_r,thdc_r,chc1_r,chc2_r,chc3_r,chc4_r,chc5_r,vhc1_r,vhc2_r,vhc3_r,vhc4_r,vhc5_r};
-  user_input.toCharArray(charBuffer, total_functs);
-  for (int i=0; i<total_functs - 1; i++){
-    commands[i] = (charBuffer[i]) - 48;
-  }
+//  user_input.toCharArray(charBuffer, total_functs);
+//  for (int i=0; i<total_functs - 1; i++){
+//    commands[i] = (charBuffer[i]) - 48;
+//  }
   
   // normalread register writes
   while (!MaximWrite("00E", "60")){}          // These 4 lines gets the DSP ready to read Neutral Current.
@@ -20,7 +26,7 @@ void user_sel_read(String user_input){
   
   /*********** Start of MySQL Statement. First mysqlheader[] is if both normalread() and harmread() are called. ********/
   /*********** Second mysqlheader[] is if only normalread() is called. In which case, remember to end the statement in chip_test_mega.ino ******/
-  char mysqlheader[] = "insert into hopeman (freq,volta,voltb,voltc,curra,currb,currc,currn,reala,realb,realc,reaca,reacb,reacc,appaa,appab,appac,pfa,pfb,pfc,pft,phaseab,phaseac,thda,cha1,cha2,cha3,cha4,cha5,vha1,vha2,vha3,vha4,vha5,thdb,chb1,chb2,chb3,chb4,chb5,vhb1,vhb2,vhb3,vhb4,vhb5,thdc,chc1,chc2,chc3,chc4,chc5,vhc1,vhc2,vhc3,vhc4,vhc5) values(";
+  char mysqlheader[] = "insert into experimental (freq,volta,voltb,voltc,curra,currb,currc,currn,reala,realb,realc,reaca,reacb,reacc,appaa,appab,appac,pfa,pfb,pfc,pft,phaseab,phaseac,thda,cha1,cha2,cha3,cha4,cha5,vha1,vha2,vha3,vha4,vha5,thdb,chb1,chb2,chb3,chb4,chb5,vhb1,vhb2,vhb3,vhb4,vhb5,thdc,chc1,chc2,chc3,chc4,chc5,vhc1,vhc2,vhc3,vhc4,vhc5) values(";
   //char mysqlheader[] = "insert into hopeman (freq,volta,voltb,voltc,curra,currb,currc,currn,reala,realb,realc,reaca,reacb,reacc,appaa,appab,appac,pfa,pfb,pfc,pft,phaseab,phaseac) values(";
   SpiSerial.write(mysqlheader, String(mysqlheader).length());
   dspready();  // Waits until the chip's DSP is ready (new data is ready).
@@ -52,7 +58,10 @@ void user_sel_read(String user_input){
   float total_thd = 0; // Temp variables for finializing the output value of THDN's
   float lower_thd = 0;
   
-  for (int i=24; i<harm_functs-1; i++){
+  for (int i=norm_functs-1; i<total_functs-1; i++){
+    if (i == 55){
+      last = true;
+    }
     if (commands[i] == 1){
       (*ptr[i+1])();
     }
@@ -64,6 +73,7 @@ void user_sel_read(String user_input){
   // End of MySQL statement
   SpiSerial.write(41);  // ")"
   SpiSerial.write(59);  // ";"
+
   delay(300);
 }
 
@@ -71,7 +81,13 @@ void user_sel_read(String user_input){
 void none(){
   dtostrf(0,10,3,buf);
   SpiSerial.write(buf);
-  SpiSerial.write(",",1);
+  if (last){
+    return;
+  }
+  else{
+    SpiSerial.write(",",1);
+  }
+    
 }
 //////////////////////////////////////// Line Frequency (NS) /////////////////////////////
 void freq_r(){
@@ -290,6 +306,7 @@ void phaseac_r(){
   phasorc = float(lower_read)/100;
   dtostrf(phasorc,10,3,buf);
   SpiSerial.write(buf);
+  SpiSerial.write(",",1);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -597,6 +614,11 @@ void data_push(float data[], int order, String type){
  
   dtostrf(data[order],10,3,buf);	// Change float value to string to be transmitted as part of MySQL statement
   SpiSerial.write(buf);
-  SpiSerial.write(",",1);
+  if (last){
+    return;
+  }
+  else {
+    SpiSerial.write(",",1);
+  }
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
