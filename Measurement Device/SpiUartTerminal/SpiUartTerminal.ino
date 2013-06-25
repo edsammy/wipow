@@ -14,10 +14,10 @@
 
 void setup() {
 
-  //pinMode(10,INPUT);    //High Z the old UNO SPI pins for the MEGA
-  //pinMode(11,INPUT);    //***But have to remember to jump MEGA SPI pins to
-  //pinMode(12,INPUT);    //***these locations.
-  //pinMode(13,INPUT);
+  pinMode(10,INPUT);    //High Z the old UNO SPI pins for the MEGA
+  pinMode(11,INPUT);    //***But have to remember to jump MEGA SPI pins to
+  pinMode(12,INPUT);    //***these locations.
+  pinMode(13,INPUT);
   
   Serial.begin(9600);
   Serial.println("SPI UART on WiFly Shield terminal tool");

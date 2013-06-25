@@ -61,15 +61,16 @@ const int harm_functs = 33;   // number of harmonic MAXIM measurements
 const int total_functs = norm_functs + harm_functs;
 
 const int data_led = 8;  // Status LED to indicate data TX (v3)
-long timestamp, endtime;
+long timestamp;
+long interval = 10000;
 
+char site[] = "www.ece.rochester.edu";
+String POSTdata = "GET /projects/power/test/index.php?data=";
+String GETcommands = "GET /projects/power/test/commands.txt";
 int lineCount = 0;
 String currLine;
-String ind = "content=";
 boolean done = false;
-
-char site[] = "eddiesamuels.com";
-char get[] = "GET /wipow/commands.txt HTTP/1.1";
+String data = "";
 
 WiFlyClient client;
 
@@ -193,17 +194,24 @@ void setup() {
 //    Serial.write(SpiSerial.read());
 //    delay(50);
 //  }
-  WiFly.reboot();
-  Serial.print("Getting user commands from web...");
-  parseHTML();
-  Serial.println("Done!");
   
-  WiFly.sendCommand("join", false, "Associated!");
-  while(SpiSerial.available() > 0) { // Flush out remaining serial data from WiFly
+  SpiSerial.write("$$$", 3);		// Go to CMD in WiFly
+  delay(500);
+    while(SpiSerial.available() > 0) {
     Serial.write(SpiSerial.read());
     delay(50);
   }
+
+  SpiSerial.write("join", 4);		// Join the pre-set network "Roving1"
+  SpiSerial.write("\r", 1);	        // ** Wifly is already set to auto-join "Roving1".
+  delay(3000);				//    This is just incase it doesn't.
+    while(SpiSerial.available() > 0) {
+    Serial.write(SpiSerial.read());
+    delay(50);
+  }
+  
   String IP = WiFly.ip();
+  Serial.println();
   Serial.println(IP);
   while(SpiSerial.available() > 0) { // Flush out remaining serial data from WiFly
     Serial.write(SpiSerial.read());
@@ -212,9 +220,6 @@ void setup() {
 
   Serial.println("Ready for communication!");
 }
-
-
-
 
 void dspready(){          // This function is called to wait until the chip's DSP cycle (and new data) is ready.
   boolean a = 0;          // It then writes back to the chip's flag register to unset the READY BIT at the end.
@@ -227,195 +232,70 @@ void dspready(){          // This function is called to wait until the chip's DS
     while (!MaximWrite("004", "0000")){}
 }
 
-
-
-
-
-
-
 void loop() {
 
-  while(!SpiSerial.available());	// Idle until WiFly has something to output (it should then mean that someone is trying to connect to our WiFly)
+  //while(!SpiSerial.available());	// Idle until WiFly has something to output (it should then mean that someone is trying to connect to our WiFly)
 									// Ideally, that "someone" should be the University's server running our webpage's code, which would accept data from this device.
 									// However, any pings or other devices could also try to connect to our device. 
 									// In which case, this code does not know/care and would act the same way (i.e. blindly pushes out data)
 									// TODO: Improve code so that it knows only to respond to the University's server running our webpage's code?
   
-  delay(500);	// Althought it adds significantly to the delay overhead of the entire data gathering system, these delays seem to be important.
+  //delay(500);	// Althought it adds significantly to the delay overhead of the entire data gathering system, these delays seem to be important.
 				// Without them, the code runs too fast for (I believe) WiFly to handle.
 				// TODO: Can fiddle around with these delays to lower them, or look at WiFly module more closely to see what is slowing it down.
   
-  while(SpiSerial.available() > 0) {	// Flushes out the HTTP headers. (Or whatever else header specific to the connection)
-    Serial.write(SpiSerial.read());		// TODO: Have WiFly not give us the HTTP headers to speed things up?
-    delay(5);
-  }
-    digitalWrite(data_led, HIGH);
-    timestamp = millis();
-    user_sel_read();	// This calls "user_sel_read.ino" and must pass a user_input parameter (String)
-    while (!MaximWrite("004", "0000")){}      // Clear the chip's DSP READY BIT so the chip can set it again when its DSP is ready.
-    delay(500);  
-    //SpiSerial.write(41);  // ")"
-    //SpiSerial.write(59);  // ";"  To finish the MySQL statement that normalread was pushing out (IF "harmread()" IS DISABLED/COMMENTED OUT)
-    
-    // Serial print total elapsed time to collect data
-    Serial.println();
-    Serial.print("Total DAQ time: ");
-    Serial.println(millis()-timestamp);
-    
-    SpiSerial.write("$$$", 3);				// CMD mode of WiFly
-    delay(300);
-    while(SpiSerial.available() > 0) {
-      Serial.write(SpiSerial.read());
-      delay(5);
-    }
-    SpiSerial.write("close", 5);			// Tell WiFly to close the HTTP connection since we should have finished transmitting the data.
-    SpiSerial.write("\r", 2);
-    delay(100);
-    while(SpiSerial.available() > 0) {
-      Serial.write(SpiSerial.read());
-      delay(5);
-    }
-    
-    SpiSerial.write("exit", 4);				// Exit CMD mode of WiFly
-    SpiSerial.write("\r", 1);
-    delay(100);
+  Serial.print("Getting user commands from web...");
+  HTTPrequest(GETcommands);
+  Serial.println("Done!");
   
-  while(SpiSerial.available() > 0) {		// Flushing of WiFly output (whatever's left, exit command should get "EXIT" response from WiFly, etc...)
-    Serial.write(SpiSerial.read());
-    delay(5);
-  }
+  digitalWrite(data_led, HIGH);
+  timestamp = millis();
+   
+  user_sel_read();	// This calls "user_sel_read.ino" and must pass a user_input parameter (String)
+  while (!MaximWrite("004", "0000")){}      // Clear the chip's DSP READY BIT so the chip can set it again when its DSP is ready.
+  delay(500);  
+  //SpiSerial.write(41);  // ")"
+  //SpiSerial.write(59);  // ";"  To finish the MySQL statement that normalread was pushing out (IF "harmread()" IS DISABLED/COMMENTED OUT)
+  
+  // Serial print total elapsed time to collect data
+  Serial.println();
+  Serial.print("Total DAQ time: ");
+  Serial.println(millis()-timestamp);
+  data.trim();
+  POSTdata += data;
+  HTTPrequest(POSTdata);
+  Serial.println(POSTdata);
+  
+//  SpiSerial.write("$$$", 3);				// CMD mode of WiFly
+//  delay(300);
+//  while(SpiSerial.available() > 0) {
+//    Serial.write(SpiSerial.read());
+//    delay(5);
+//  }
+//  SpiSerial.write("close", 5);			// Tell WiFly to close the HTTP connection since we should have finished transmitting the data.
+//  SpiSerial.write("\r", 2);
+//  delay(100);
+//  while(SpiSerial.available() > 0) {
+//    Serial.write(SpiSerial.read());
+//    delay(5);
+//  }
+//    
+//  SpiSerial.write("exit", 4);				// Exit CMD mode of WiFly
+//  SpiSerial.write("\r", 1);
+//  delay(100);
+//
+//while(SpiSerial.available() > 0) {		// Flushing of WiFly output (whatever's left, exit command should get "EXIT" response from WiFly, etc...)
+//  Serial.write(SpiSerial.read());
+//  delay(5);
+//}
   
   
   digitalWrite(data_led, LOW);
-  
-					// End of loop is at the end |
-					//							 |
-					//							 V
-  
-  
- 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// THE CODE COMMENTED OUT BELOW IS OLD CODE THAT TRIES TO START IMPLEMENTING USER COMMAND INPUT TO THE DEVICE.					//
-// This would allow the user/server to send commands to this device/code via over WiFly or through USB serial console,			//
-// and this device will output data accordingly instead of outputting a hardcoded set of data that it is currently made to do.	//
-//																																//
-// The code is definitely poorly coded and implemented, but I left this here just for reference for future ideas.				//
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
- 
-   // if(Serial.available()) { // Outgoing data
-   //   SpiSerial.write(Serial.read());
-   // }
-  
-//byte cmd = 9;    // cmd = 0 --> Normal read is enabled
-
-/*   // Outside Wireless Command to send
-byte temp;
-char firsttwo[3];
-
-int incomingdata = SpiSerial.available();
-for(int y=0;y<incomingdata;y++){
-  temp = SpiSerial.read();
-      Serial.write(temp);
-      if(y==0){
-         firsttwo[0] = temp;
-      }
-      if(y==1){
-         firsttwo[1] = temp;
-           if(firsttwo[0]==0x67 && firsttwo[1]==0x6F){
-             cmd = 0;
-             break;
-           }
-           else{
-             cmd = 9;
-           }
-      }
-}
-*/
-
-
- /* while(SpiSerial.available() > 0) {
-      Serial.write(SpiSerial.read());
+  timestamp = millis();
+  while (timestamp + interval > millis()){
+  // Delay between readings
   }
-  */
-  
-  /*   //Console command to send
-  if(Serial.available()) { // Outgoing data
-    if(Serial.peek()==0x30){
-      cmd = 0;
-      while(Serial.available()){ Serial.read();}
-    }
-    else{
-      cmd = 9;
-      //while(Serial.available()){
-        Serial.write(Serial.peek());
-        SpiSerial.write(Serial.read());
-      //}
-    }
-  }
-  */
-  
-  /*
-  if(Serial.available()) {              // Reads the Serial buffer 3 characters at a time to read that register (of the chip).
-    String address;
-    for(int i=0;i<3;i++) {
-      if(Serial.available()){
-        address += char(Serial.read());
-      }
-      else
-       i--;
-    }
-    Serial.println(address);
-    if(address.equals("res")){
-      digitalWrite(3, LOW);     //Reset of Maxim.
-      delay(1000);
-      digitalWrite(3, HIGH);
-      delay(1000);
-      initial_register_writes();
-    }
-    else{
-        for(int i =0;i<10;i++){            // Currently hard-coded to read the register 10 times, reading 8 bytes going up from register number inputted.
-          MaximRead(address,8);
-          Serial.println(upper_read,HEX);
-          Serial.println(lower_read,HEX);
-        }
-    }
-  }
- */
- 
- 
- /*    //Start sending when cmd=0
- if (cmd == 0){
-    normalread();    // This function reads the "normal" power values: Line Frequency; Voltage/Current RMS; Total and Fundamental Powers(Real, Reactive, Apparent); PF; Voltage Phasors.
- }
- */
- 
- 
- //delay(1000);
- 
- /*if (cmd == 1){
-                                       // The rest is for harmonic readings.
-  if(counter < 2){
-    harmread(harm_order, counter);
-    counter++;
-  }
-  else{
-      counter = 0;
-    if(harm_order < 5){
-      harm_order++;
-    }
-    else{
-      harm_order = 1;
-    }
-  }
-}
-*/
-// Serial.println("");
-								//////////////////////
-								// END OF OLD CODE  //
-								//////////////////////
 
-delay(100);
-
-}		//////////// END OF LOOP /////////////
+}//////////// END OF LOOP /////////////
 
 

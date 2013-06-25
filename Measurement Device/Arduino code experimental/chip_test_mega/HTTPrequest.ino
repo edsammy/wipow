@@ -1,7 +1,11 @@
-void parseHTML(){
+
+void HTTPrequest(String request){
+  lineCount = 0;
+  done = false;
   if (client.connect(site, 80)) {
     Serial.println("connected");
-    client.println(get);
+    client.print(request);
+    client.println(" HTTP/1.1");
     client.print("Host: ");
     client.println(site);
     client.println();
@@ -16,8 +20,8 @@ void parseHTML(){
       currLine += inChar;
       Serial.write(inChar);
       if (inChar == '\n'){
-        if (lineCount == 13){
-          user_input = currLine;
+        if (find_text("$", currLine) == 0){
+          user_input = currLine.substring(1);
         }
         lineCount ++;
         currLine = "";
@@ -27,7 +31,6 @@ void parseHTML(){
 
     if (!client.connected()) {
       Serial.println();
-      Serial.println(user_input);
       Serial.println("disconnecting.");
       client.stop();
       done = true;
