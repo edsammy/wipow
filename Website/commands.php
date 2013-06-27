@@ -1,13 +1,13 @@
 <?php
-  $myFile = "commands.txt";
+  $directory = getcwd();
+  include($directory.'/members/pinclude/devicelist.php');
+
   if(isset($_POST['arduino']) && !empty($_POST['arduino'])) {
     $data = $_POST['arduino'];
   }
-  if(strlen($data) == 57){
-    file_put_contents($myFile, $data);
-  }
-  else{
-    file_put_contents($myFile, $data);
-  }
-  
+  $device = substr($data, 0, strpos($data, "$")); 
+  $data = substr($data, strpos($data, "$"), strlen($data));
+  $data = $data."\n";
+  $myFile = "tmp/".$device."_commands.txt";
+  file_put_contents($myFile, $data);
 ?>

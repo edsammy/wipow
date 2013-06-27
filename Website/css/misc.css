@@ -1,0 +1,57 @@
+html{font-family:tahoma;background-image: -ms-linear-gradient(top, #FFFFFF 0%, #D5E6EE 100%);
+	background-color: #D8D8D8;
+height:100%;
+	min-width: 100%;}
+
+			
+
+
+#centerall{margin-top:auto;margin-bottom:auto;}
+
+        .pure-button-success,
+        .pure-button-error,
+        .pure-button-warning,
+        .pure-button-secondary {
+            color: white;
+            border-radius: 4px;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+        }
+
+		
+		#notify{width:400px;height:20px;position:absolute;margin-top:15px;margin-left:20px;color:rgb(205, 53, 53);}
+
+
+        .pure-button-success {
+            background: rgb(28, 184, 65); /* this is a green */
+        }
+
+        .pure-button-error {
+            background: rgb(202, 60, 60); /* this is a maroon */
+        }
+
+        .pure-button-warning {
+            background: rgb(223, 117, 20); /* this is an orange */
+        }
+
+        .pure-button-secondary {
+            background: rgb(66, 184, 221); /* this is a light blue */
+        }
+			
+		#picture{position:absolute;margin-left:350px;opacity:0.2;margin-top:-218px;}
+		#picture:hover{opacity:0.5;}
+		#centering{left:50%;width:610px;height:620px;margin-left:-300px;position:absolute;margin-top:100px;}	
+			
+#head{width:700px;margin-top:-15px;margin-left:-15px;height:400px;overflow:hidden;position:absolute;}
+#topbar{min-width:100%;width:100%;background-color:#086A87; height:85px;top:0;border-bottom: 1px solid #ddd;
+				box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.4);position:absolute;left:0;padding-bottom:0px;padding-left:33px;}
+				
+				#phpdisplay{font-weight:bold;width:600px;margin-left:2px; height:28px;position:absolute;margin-top:10px;font-size:16px;border-radius:4px;background:#ccc;border:1px #bbb solid;}
+				
+			#timecontain{width:500px;height:200px; border-radius:5px;position:absolute;margin-top:65px;overflow:hidden;margin-left:96px;}
+			#start{font-size:30px;width:700px;height:45px;margin-left:10px;margin-top:10px;}
+			#end{font-size:30px;width:700px;height:4px;margin-left:10px;display:block;}
+			#formcontain{width:310px;height:270px;margin-left:20px;position:absolute;margin-top:200px;border:0px rgb(8, 106, 135) solid;border-radius:5px;display:block;padding:0px;}
+			#email{margin-left:20px;width:215px;height:22px;margin-top:5px;position:absolute;font-size:12px;color:#4B4B4B;background:#FAFAFA;}
+			
+			.info{padding: 0px 15px;width:570px;right:0; background:#FFF;height:50px;position:absolute;margin-top:470px;font-size:16px;border-radius:4px;background:#ccc;border:1px #bbb solid;}
+			.infocontain{margin-left:auto;margin-right:auto;margin-top:3px;text-align:center;position:relative;}

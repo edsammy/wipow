@@ -2,9 +2,9 @@
 <html>
 	<head>
 		<title>Wireless Power Monitor Interface</title>
-		<link href="indextest.css" rel="stylesheet" type="text/css" />
-    <link href="select.css" rel="stylesheet" type="text/css" />
-    <link href="buttons.css" rel="stylesheet" type="text/css" />
+		<link href="css/indextest.css" rel="stylesheet" type="text/css" />
+    <link href="css/select.css" rel="stylesheet" type="text/css" />
+    <link href="css/buttons.css" rel="stylesheet" type="text/css" />
 		<link rel="shortcut icon" href="images/powericon.ico">
     <script language="javascript" type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
     <script language="javascript" type="text/javascript" src="select.js"></script>
@@ -12,14 +12,15 @@
 		<script language="javascript">
 function OnSubmitForm(){
 	if(document.pressed == 'Go Live!')
-		{document.myform.action = "live.php";}
+		{document.myform.action = "livetest.php";}
 	return true;
 } 
 
 		</script>
+		
     <script>
       $(function() {
-        $('a[rel*=leanModal]').leanModal({top:100});
+        $('a[rel*=leanModal]').leanModal({top:40});
       });
     </script>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -42,38 +43,40 @@ function OnSubmitForm(){
 								</select>
 						</div>
 						<a href="definitions.html" style="margin-left:220px;margin-top:5px" target="_new" onclick="javascript:void window.open('definitions.html','1371063848022','width=700,height=320,toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0');return false;">Click here to see definitions for each measurement</a>
-					</div>		
-					<div class="viewchoice">
+					</div>	
+
+					<div id="fieldcontain">
 						<fieldset id="field">							
 							<legend id="bigboxtitle">View LIVE data or view recorded data and schedule data collection</legend>
 							<div class="fieldcontent">
 								<div id="fieldleft">
-									<div class="hidden"><a id="go" rel="leanModal" name="userSelect" href="#userSelect"><span class="changecolor"><img src="images/newpower.png" style="width:70%;margin-top:0px;margin-left:12px;margin-bottom:0px;border:0;" class="imagetrans" /><br>GO LIVE</a></span>
+									<div id="hidden"><a id="go" rel="leanModal" name="userSelect" href="#userSelect"><span class="changecolor"><img src="images/newpower.png" style="width:70%;margin-top:0px;margin-left:12px;margin-bottom:8px;border:0;opacity:0.8;"/><br>GO LIVE</a></span>
 									</div>
-                  <div class="smalltext">
+				  <div class="smalltext">
 									live display shows all values in tabular form by default
 									</div>	
 								</div>								
 								<div class="divider"></div>								
 								<div class="fieldmiddle">	
-									<div class="hidden1"><a href="http://www.ece.rochester.edu/projects/power/members/"><span class="changecolor"><img src="images/view.png" class="imagetrans1" style="text-decoration:none;border:none;"/><br>VIEW DATA</a></span>
+									<div id="hidden1"><a href="http://www.ece.rochester.edu/projects/power/members/"><span class="changecolor"><img src="images/view.png" class="imagetrans1" style="text-decoration:none;border:none;margin-bottom:-4px;"/><br>VIEW DATA</a></span>
 										</div>
-                    <div class="smalltext1">
+					<div class="smalltext1">
 										view collected data (authorization required)
 										</div>	
 								</div>							
 								<div class="divider"></div>					
 								<div class="fieldright">
-									<div class="hidden2"><a href="http://www.ece.rochester.edu/projects/power/members/"><span class="changecolor"><img src="images/calendar.png" class="imagetrans2" style="text-decoration:none;border:none;margin-left:3px;"/><br>SCHEDULE COLLECTION</a></span>
+									<div id="hidden2"><a href="http://www.ece.rochester.edu/projects/power/members/"><span class="changecolor"><img src="images/calendar.png" class="imagetrans2" style="text-decoration:none;border:none;margin-left:3px;margin-bottom:-16px;"/><br>SCHEDULE</a></span>
 									</div>
 									<div class="smalltext2">
 									schedule data collection (up to 6 hour interval)
 									</div>	
 								</div>
 							</div>
-						</fieldset>
-					</div>
-			</form>	
+						</fieldset>	
+						<br><br><br><br><br><br>
+					</div><!-- fieldcontain -->
+				
 			<div id="userSelect">
       <div id="userSelectHeader">
         <p> Check the data you want to view and click continue. Click anywhere outside this dialogue to close it.</p>
@@ -216,11 +219,12 @@ function OnSubmitForm(){
           </td>
         </tr>
       </div>
-      <button class="pure-button pure-button-success" id="btn" type="button">Go Live!</button>
+      <button class="pure-button pure-button-success" id="btn" type="submit" name="submit" value="Go Live!" onclick="document.pressed=this.value">Go Live!</button>
+      </form>
     </div>
   <div id="lean_overlay"></div>
 
-<div id="tabs">
+		<div id="tabs">
 			<ul id="nav">
 					<li>
 						<a href="#">about</a>
@@ -242,7 +246,7 @@ function OnSubmitForm(){
 						<a href="#">contact</a>
 					</li>
 				</ul>
-			</div>
+			</div><!-- tabs -->
 
 
 

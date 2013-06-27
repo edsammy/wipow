@@ -4,7 +4,9 @@
 // and only the checked data is gathered by the MAXIM chip.
 $(function(){
   $('#btn').click(function () {
-    var comm = "";
+    // Commands are prepended with device name, ex. "cogen$11000..."
+    var comm = "$";
+    var device = $("select option:selected").val().toLowerCase();
     $('.selection').each(function () {
         if ($(this).prop('checked') == true) {
             comm = comm + "1";
@@ -12,7 +14,16 @@ $(function(){
             comm = comm + "0";
         }
     });
-    alert(comm);
+    //alert(comm);
+    var request = $.ajax({
+      url: "commands.php",
+      type: "POST",
+      data: {arduino : comm, device: device},
+      dataType: "text"
+    });
+    $("#lean_overlay").fadeOut(200);
+    $("#userSelect").css({"display":"none"});
+    document.action = "live.php";
   });
 }); 
 
