@@ -17,6 +17,8 @@ Change April 9, 2013: 		Further commented entire code. Cleaned up some of the ol
 
 Change May 13, 2013:		Changed the way THD measurement is interpreted. The way the code interpreted it was wrong. Now it should be consistent with the equation given in the datasheet.
 
+Major Change June 27, 2013      New communication method. Arduino sends GET request containing collected data which is parsed by "../website/arduino_DBconnect.php" 
+
 *****************************************************************************************************************/
 			////////////
 			// TODOs //
@@ -33,11 +35,7 @@ Change May 13, 2013:		Changed the way THD measurement is interpreted. The way th
 //TODO: Implement the ability for this code/device to accept USER INPUTS. So that a user (via online or USB serial console) can 
 //		specify which measurements to obtain, as well as write to calibration registers so that calibration does not have to be hardcoded
 //		and the entire code uploaded each time calibration needs to be done.
-
-//TODO: Have a better way to build up that MySQL string (also the ending ");"). (See normalread.ino and harmread.ino)
-//		Currently it is hardcoded to just push/dump out a certain string statement. It is troublesome to even change the hardcode to
-//		have the device output a different set of data. FURTHERMORE, this hardcode implementation assumes that everything will be read
-//		from the MAXIM chip in the order specified in the MySQL statement. This can potentially cause problems with data going into the wrong place.
+//              ***June 27 update allows for user inputs to select which measurements to take but does not allow calibration***
 
 			///////////////////
 			// END OF TODOs //
@@ -47,14 +45,15 @@ Change May 13, 2013:		Changed the way THD measurement is interpreted. The way th
 #include <SPI.h>
 #include <WiFly.h>	// **** SpiUart.cpp's  begin() function has its call to SPI.begin() commented out!! This is to allow SPI settings for communication to the Maxim chip later.
 
+const String deviceName = "cogen";
 
 long upper_read, lower_read;    // When calling MaximRead, it will update these two variables with the read values (4 bytes per long variable, 8 bytes max).
 
 long response;  // byte by byte response of the SPI communication protocol with the MAXIM chip. (Used for maxim_write and maxim_read)
 
 //***Select the data you want to collect, 1 means collect it, 0 means don't (refer to user_sel_read for data order)***
-String user_input="111111111111111111111111111111111111111111111111111111111";
-//String user_input="111111111111111111111111000000000000000000000000000000000";
+String user_input="111111111111111111111111000000000000000000000000000000000";
+//String user_input="111111111111111111111111111111111111111111111111111111110";
 
 const int norm_functs = 24;  // number of non-harmonic MAXIM measurements (used for user input parsing)
 const int harm_functs = 33;   // number of harmonic MAXIM measurements
@@ -65,8 +64,7 @@ long timestamp;
 long interval = 10000;
 
 char site[] = "www.ece.rochester.edu";
-String POSTdata = "GET /projects/power/test/index.php?data=";
-String GETcommands = "GET /projects/power/test/commands.txt";
+String GETcommands = "GET /projects/power/tmp/";
 int lineCount = 0;
 String currLine;
 boolean done = false;
@@ -155,45 +153,6 @@ void setup() {
   Serial.println("Done!");
   
   delay(1000);
-//  SpiSerial.write("$$$", 3);		// Go to CMD in WiFly
-//  delay(500);
-//    while(SpiSerial.available() > 0) {
-//    Serial.write(SpiSerial.read());
-//    delay(50);
-//  }
-//
-//  SpiSerial.write("join", 4);		// Join the pre-set network "Roving1"
-//  SpiSerial.write("\r", 1);			// ** Wifly is already set to auto-join "Roving1".
-//  delay(3000);						//    This is just incase it doesn't.
-//    while(SpiSerial.available() > 0) {
-//    Serial.write(SpiSerial.read());
-//    delay(50);
-//  }
-//  
-//  SpiSerial.write("get i", 5);		// "get i" prints out ip settings of Wifly
-//  SpiSerial.write("\r", 1);			// This lets us see the IP of the WiFly in the network
-//  delay(1000);
-//  while(SpiSerial.available() > 0) {
-//    Serial.write(SpiSerial.read());
-//    delay(50);
-//  }
-//
-//  delay(2000);
-//  while(SpiSerial.available() > 0) { // Flushing out the "get i" lines
-//    Serial.write(SpiSerial.read());
-//  }
-//  delay(3000);
-//  while(SpiSerial.available() > 0) {
-//    Serial.write(SpiSerial.read());
-//  }
-//  
-//  SpiSerial.write("exit", 4);		 // Exit CMD mode
-//  SpiSerial.write("\r", 1);
-//  delay(1000);
-//  while(SpiSerial.available() > 0) { // Flush out remaining serial data from WiFly
-//    Serial.write(SpiSerial.read());
-//    delay(50);
-//  }
   
   SpiSerial.write("$$$", 3);		// Go to CMD in WiFly
   delay(500);
@@ -245,7 +204,13 @@ void loop() {
 				// TODO: Can fiddle around with these delays to lower them, or look at WiFly module more closely to see what is slowing it down.
   
   Serial.print("Getting user commands from web...");
-  HTTPrequest(GETcommands);
+  HTTP_GETcommands(GETcommands);
+  
+  // Parse the user input string and enter binary instructions into the "commands" array  
+  user_input.toCharArray(charBuffer, total_functs);
+  for (int i=0; i<total_functs-1; i++){
+    commands[i] = (charBuffer[i]) - 48;
+  }
   Serial.println("Done!");
   
   digitalWrite(data_led, HIGH);
@@ -262,9 +227,9 @@ void loop() {
   Serial.print("Total DAQ time: ");
   Serial.println(millis()-timestamp);
   data.trim();
-  POSTdata += data;
-  HTTPrequest(POSTdata);
-  Serial.println(POSTdata);
+  HTTP_POSTrequest(data);
+  Serial.print("Data: ");
+  Serial.println(data);
   
 //  SpiSerial.write("$$$", 3);				// CMD mode of WiFly
 //  delay(300);

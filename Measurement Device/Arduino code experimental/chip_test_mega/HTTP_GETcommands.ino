@@ -1,10 +1,12 @@
 
-void HTTPrequest(String request){
+void HTTP_GETcommands(String request){
   lineCount = 0;
   done = false;
   if (client.connect(site, 80)) {
     Serial.println("connected");
     client.print(request);
+    client.print(deviceName);
+    client.print("_commands.txt");
     client.println(" HTTP/1.1");
     client.print("Host: ");
     client.println(site);
@@ -19,7 +21,7 @@ void HTTPrequest(String request){
       char inChar = client.read();
       currLine += inChar;
       Serial.write(inChar);
-      if (inChar == '\n'){
+      if (inChar == '\n'){ 
         if (find_text("$", currLine) == 0){
           user_input = currLine.substring(1);
         }
@@ -37,19 +39,7 @@ void HTTPrequest(String request){
     }
   }
   
-  user_input.toCharArray(charBuffer, total_functs);
-  for (int i=0; i<total_functs - 1; i++){
-    commands[i] = (charBuffer[i]) - 48;
-  }
-  return;
-}
 
-int find_text(String needle, String haystack) {
-  int foundpos = -1;
-  for (int i = 0; (i < haystack.length() - needle.length()); i++) {
-    if (haystack.substring(i,needle.length()+i) == needle) {
-      foundpos = i;
-    }
-  }
-  return foundpos;
+
+  return;
 }
