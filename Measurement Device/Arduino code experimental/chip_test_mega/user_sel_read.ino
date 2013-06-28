@@ -15,10 +15,6 @@ void user_sel_read(){
   last = false;
   data = "";
   static void (*ptr[total_functs])() = {none,freq_r,volta_r,voltb_r,voltc_r,curra_r,currb_r,currc_r,currn_r,reala_r,realb_r,realc_r,reaca_r,reacb_r,reacc_r,appaa_r,appab_r,appac_r,pfa_r,pfb_r,pfc_r,pft_r,phaseab_r,phaseac_r,thda_r,cha1_r,cha2_r,cha3_r,cha4_r,cha5_r,vha1_r,vha2_r,vha3_r,vha4_r,vha5_r,thdb_r,chb1_r,chb2_r,chb3_r,chb4_r,chb5_r,vhb1_r,vhb2_r,vhb3_r,vhb4_r,vhb5_r,thdc_r,chc1_r,chc2_r,chc3_r,chc4_r,chc5_r,vhc1_r,vhc2_r,vhc3_r,vhc4_r,vhc5_r};
-//  user_input.toCharArray(charBuffer, total_functs);
-//  for (int i=0; i<total_functs - 1; i++){
-//    commands[i] = (charBuffer[i]) - 48;
-//  }
   
   // normalread register writes
   while (!MaximWrite("00E", "60")){}          // These 4 lines gets the DSP ready to read Neutral Current.
@@ -32,6 +28,7 @@ void user_sel_read(){
   //char mysqlheader[] = "insert into experimental (freq,volta,voltb,voltc,curra,currb,currc,currn,reala,realb,realc,reaca,reacb,reacc,appaa,appab,appac,pfa,pfb,pfc,pft,phaseab,phaseac,thda,cha1,cha2,cha3,cha4,cha5,vha1,vha2,vha3,vha4,vha5,thdb,chb1,chb2,chb3,chb4,chb5,vhb1,vhb2,vhb3,vhb4,vhb5,thdc,chc1,chc2,chc3,chc4,chc5,vhc1,vhc2,vhc3,vhc4,vhc5) values(";
   //char mysqlheader[] = "insert into hopeman (freq,volta,voltb,voltc,curra,currb,currc,currn,reala,realb,realc,reaca,reacb,reacc,appaa,appab,appac,pfa,pfb,pfc,pft,phaseab,phaseac) values(";
   //SpiSerial.write(mysqlheader, String(mysqlheader).length());
+  
   dspready();  // Waits until the chip's DSP is ready (new data is ready).
   
   for (int i=0; i<norm_functs-1; i++){
@@ -59,10 +56,6 @@ void user_sel_read(){
   while (!MaximWrite("030", "0000")){};	// Again disabling the averaging filter. (It this necessary since it is already called in initial_register_writes?)
 										// (Highly doubt that this does anything much, but it shouldn't harm anything)
 										// (SEE TODOs in chip_test_mega.ino)
-										
-  /****The Start of the MySQL statement. (USED WHEN "normalread()" is disabled/commented out, and only harmread() is called)****/
-  //char mysqlheader[] = "insert into hopeman (thda,cha1,cha2,cha3,cha4,cha5,vha1,vha2,vha3,vha4,vha5,thdb,chb1,chb2,chb3,chb4,chb5,vhb1,vhb2,vhb3,vhb4,vhb5,thdc,chc1,chc2,chc2,chc3,chc4,chc5,vhc1,vhc2,vhc3,vhc4,vhc5) values(";
-  //SpiSerial.write(mysqlheader, String(mysqlheader).length());
   
   dspready(); 
  

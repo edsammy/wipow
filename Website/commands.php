@@ -8,6 +8,10 @@
   $device = substr($data, 0, strpos($data, "$")); 
   $data = substr($data, strpos($data, "$"), strlen($data));
   $data = $data."\n";
-  $myFile = "tmp/".$device."_commands.txt";
-  file_put_contents($myFile, $data);
+  
+  $arduinoFile = "tmp/".$device."_commands.txt";
+  
+  file_put_contents($arduinoFile, $data);
+  
+  
 ?>

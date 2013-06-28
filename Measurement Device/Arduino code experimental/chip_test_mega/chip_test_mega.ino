@@ -2,6 +2,7 @@
 This code is written in C/C++ for the Arduino MEGA using the Arduino IDE for the Wireless Power Monitor device.
 
 Code by: Ka Fung
+Modified by: Eddie Samuels
 University of Rochester
 Mentor: Professor Thomas B. Jones
 Thanks to Gabrial Unger, Lucas Crandall, and Pak Lam Yung.
@@ -26,6 +27,7 @@ Major Change June 27, 2013      New communication method. Arduino sends GET requ
 			
 //TODO: April 5, 2013 update works, but is very slow. Is there a way to increase speed/use less DSP cycles to get harmonic measurment registers ready?
 //		As far as I am concerned (4/9/2013), I don't have any ideas looking at the datasheet. Email MAXIM support? (I might do that soon)
+//              ***The best way to speed up data collection is to only collect the measurements you want to monitor. Will investigate further into MAXIM chip registers to see if there are other options***
 
 //TODO: Investigate the averaging filter register 0x030. 
 //		It is currently set to zero (no averaging to allow a measurement register to completely change to a new value every DSP cycle)
@@ -41,19 +43,24 @@ Major Change June 27, 2013      New communication method. Arduino sends GET requ
 			// END OF TODOs //
 			///////////////////
 
+// Enables verbose Serial output
+#define DEBUG
 
 #include <SPI.h>
 #include <WiFly.h>	// **** SpiUart.cpp's  begin() function has its call to SPI.begin() commented out!! This is to allow SPI settings for communication to the Maxim chip later.
 
+
+//****Enter device name that refers to MySQL table here****////
 const String deviceName = "cogen";
+/////////////////////////////////////////////////////////
+
 
 long upper_read, lower_read;    // When calling MaximRead, it will update these two variables with the read values (4 bytes per long variable, 8 bytes max).
 
 long response;  // byte by byte response of the SPI communication protocol with the MAXIM chip. (Used for maxim_write and maxim_read)
 
-//***Select the data you want to collect, 1 means collect it, 0 means don't (refer to user_sel_read for data order)***
-String user_input="111111111111111111111111000000000000000000000000000000000";
-//String user_input="111111111111111111111111111111111111111111111111111111110";
+//***Select the data you want to collect, '1' means collect it, '0' means don't (refer to user_sel_read for data order)***
+String user_input="111111111111111111111111111111111111111111111111111111111";
 
 const int norm_functs = 24;  // number of non-harmonic MAXIM measurements (used for user input parsing)
 const int harm_functs = 33;   // number of harmonic MAXIM measurements
@@ -63,12 +70,13 @@ const int data_led = 8;  // Status LED to indicate data TX (v3)
 long timestamp;
 long interval = 10000;
 
-char site[] = "www.ece.rochester.edu";
-String GETcommands = "GET /projects/power/tmp/";
+char site[] = "www.ece.rochester.edu";    // Host server
+String GETcommands = "GET /projects/power/tmp/";    // Location of command file on server
+String GETdata = "GET /projects/power/arduino_DBconnect.php?data=";    // php file that parses the data
 int lineCount = 0;
-String currLine;
+String currLine, error_log;
 boolean done = false;
-String data = "";
+String data = "";    // Holds all data to be sent to server
 
 WiFlyClient client;
 
@@ -176,8 +184,13 @@ void setup() {
     Serial.write(SpiSerial.read());
     delay(50);
   }
-
-  Serial.println("Ready for communication!");
+  
+  #ifdef DEBUG
+    Serial.println();
+    Serial.print("Device name: ");
+    Serial.println(deviceName);
+    Serial.println("Ready for communication!");
+  #endif
 }
 
 void dspready(){          // This function is called to wait until the chip's DSP cycle (and new data) is ready.
@@ -192,70 +205,73 @@ void dspready(){          // This function is called to wait until the chip's DS
 }
 
 void loop() {
-
-  //while(!SpiSerial.available());	// Idle until WiFly has something to output (it should then mean that someone is trying to connect to our WiFly)
-									// Ideally, that "someone" should be the University's server running our webpage's code, which would accept data from this device.
-									// However, any pings or other devices could also try to connect to our device. 
-									// In which case, this code does not know/care and would act the same way (i.e. blindly pushes out data)
-									// TODO: Improve code so that it knows only to respond to the University's server running our webpage's code?
   
-  //delay(500);	// Althought it adds significantly to the delay overhead of the entire data gathering system, these delays seem to be important.
-				// Without them, the code runs too fast for (I believe) WiFly to handle.
-				// TODO: Can fiddle around with these delays to lower them, or look at WiFly module more closely to see what is slowing it down.
+  #ifdef DEBUG
+    Serial.print("Getting user commands from web...");
+  #endif
+  HTTP_GET(GETcommands);
   
-  Serial.print("Getting user commands from web...");
-  HTTP_GETcommands(GETcommands);
-  
-  // Parse the user input string and enter binary instructions into the "commands" array  
+  // Parse the "user_input" string and enter binary instructions into the "commands" array  
   user_input.toCharArray(charBuffer, total_functs);
   for (int i=0; i<total_functs-1; i++){
     commands[i] = (charBuffer[i]) - 48;
   }
-  Serial.println("Done!");
   
+  #ifdef DEBUG
+    Serial.println("Done!");
+  #endif
+  
+  // Turn data collection status LED on
   digitalWrite(data_led, HIGH);
   timestamp = millis();
-   
-  user_sel_read();	// This calls "user_sel_read.ino" and must pass a user_input parameter (String)
-  while (!MaximWrite("004", "0000")){}      // Clear the chip's DSP READY BIT so the chip can set it again when its DSP is ready.
+  
+  // Calls "user_sel_read.ino" which reads the "commands" array and collects the according measurements 
+  user_sel_read();	
+  
+  // Clear the chip's DSP READY BIT so the chip can set it again when its DSP is ready.
+  while (!MaximWrite("004", "0000")){}
   delay(500);  
-  //SpiSerial.write(41);  // ")"
-  //SpiSerial.write(59);  // ";"  To finish the MySQL statement that normalread was pushing out (IF "harmread()" IS DISABLED/COMMENTED OUT)
+  
+  // Eliminate random whitspaces in "data" string
+  data.trim();
+  HTTP_GET(GETdata);
   
   // Serial print total elapsed time to collect data
-  Serial.println();
-  Serial.print("Total DAQ time: ");
-  Serial.println(millis()-timestamp);
-  data.trim();
-  HTTP_POSTrequest(data);
-  Serial.print("Data: ");
-  Serial.println(data);
+  #ifdef DEBUG
+    Serial.println();
+    Serial.print("Total DAQ time: ");
+    Serial.println(millis()-timestamp);
+    Serial.print("Data: ");
+    Serial.println(data);
+  #endif
   
-//  SpiSerial.write("$$$", 3);				// CMD mode of WiFly
-//  delay(300);
-//  while(SpiSerial.available() > 0) {
-//    Serial.write(SpiSerial.read());
-//    delay(5);
-//  }
-//  SpiSerial.write("close", 5);			// Tell WiFly to close the HTTP connection since we should have finished transmitting the data.
-//  SpiSerial.write("\r", 2);
-//  delay(100);
-//  while(SpiSerial.available() > 0) {
-//    Serial.write(SpiSerial.read());
-//    delay(5);
-//  }
-//    
-//  SpiSerial.write("exit", 4);				// Exit CMD mode of WiFly
-//  SpiSerial.write("\r", 1);
-//  delay(100);
-//
-//while(SpiSerial.available() > 0) {		// Flushing of WiFly output (whatever's left, exit command should get "EXIT" response from WiFly, etc...)
-//  Serial.write(SpiSerial.read());
-//  delay(5);
-//}
+// Make sure that the WiFly is disconnect and the CMD mode is exited so the device does not lock up
+  SpiSerial.write("$$$", 3);				// CMD mode of WiFly
+  delay(300);
+  while(SpiSerial.available() > 0) {
+    Serial.write(SpiSerial.read());
+    delay(5);
+  }
+  SpiSerial.write("close", 5);			// Tell WiFly to close the HTTP connection since we should have finished transmitting the data.
+  SpiSerial.write("\r", 2);
+  delay(100);
+  while(SpiSerial.available() > 0) {
+    Serial.write(SpiSerial.read());
+    delay(5);
+  }
+    
+  SpiSerial.write("exit", 4);				// Exit CMD mode of WiFly
+  SpiSerial.write("\r", 1);
+  delay(100);
+
+while(SpiSerial.available() > 0) {		// Flushing of WiFly output (whatever's left, exit command should get "EXIT" response from WiFly, etc...)
+  Serial.write(SpiSerial.read());
+  delay(5);
+}
   
-  
+  // Turn data collection status LED off
   digitalWrite(data_led, LOW);
+  
   timestamp = millis();
   while (timestamp + interval > millis()){
   // Delay between readings

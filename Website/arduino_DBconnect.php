@@ -24,10 +24,10 @@
 	$result = mysql_query($escaped_query, $conn); // Store retrieved data into database
   // Confirm the data has been entered in DB
   if($result){
-    echo "OK";
+    echo "OK\n";
   } 
   else {
-    echo "ERROR";
+    echo "ERROR\n";
   }
   
 ?>

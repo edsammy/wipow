@@ -2,28 +2,27 @@
 // the check boxes and generates a string with a '1' if the box is checked 
 // and a '0' if the box is unchecked. This string is decoded by the Arduino
 // and only the checked data is gathered by the MAXIM chip.
+
 $(function(){
   $('#btn').click(function () {
     // Commands are prepended with device name, ex. "cogen$11000..."
-    var comm = "$";
-    var device = $("select option:selected").val().toLowerCase();
-    $('.selection').each(function () {
+    var comm = $("select option:selected").val().toLowerCase() + "$";
+    $('#a :checkbox,#b :checkbox ,#c :checkbox, #other :checkbox').each(function () {
         if ($(this).prop('checked') == true) {
             comm = comm + "1";
         } else {
             comm = comm + "0";
         }
     });
-    //alert(comm);
+    //alert(name);
     var request = $.ajax({
       url: "commands.php",
       type: "POST",
-      data: {arduino : comm, device: device},
+      data: {arduino : comm},
       dataType: "text"
     });
     $("#lean_overlay").fadeOut(200);
     $("#userSelect").css({"display":"none"});
-    document.action = "live.php";
   });
 }); 
 
@@ -32,17 +31,17 @@ $(function(){
 $(function(){
   $('.selAll').on('click', function() {
     if ($(this).prop('checked') == true) {
-      $('.selection').prop('checked', true);
+      $('#a :checkbox,#b :checkbox ,#c :checkbox, #other :checkbox').prop('checked', true);
     }
     else {
-      $('.selection').prop('checked', false);
+      $('#a :checkbox,#b :checkbox ,#c :checkbox, #other :checkbox').prop('checked', false);
     }
   });
  }); 
  
  // Selected voltages
  $(function(){
-  $('.selVoltage').on('click', function() {
+  $('.selVoltage, .voltage').on('click', function() {
     if ($(this).prop('checked') == true) {
       $('.voltage').prop('checked', true);
     }
@@ -54,7 +53,7 @@ $(function(){
  
  // Select currents
   $(function(){
-  $('.selCurrent').on('click', function() {
+  $('.selCurrent, .current').on('click', function() {
     if ($(this).prop('checked') == true) {
       $('.current').prop('checked', true);
     }
@@ -64,26 +63,46 @@ $(function(){
   });
  }); 
  
- // Select power
+ // Select power (realpower, reacpower, appapower, powerfactor)
   $(function(){
   $('.selPower').on('click', function() {
     if ($(this).prop('checked') == true) {
-      $('.power').prop('checked', true);
+      $('.realpower').prop('checked', true);
+      $('.reacpower').prop('checked', true);
+      $('.appapower').prop('checked', true);
+      $('.powerfactor').prop('checked', true);
     }
     else {
-      $('.power').prop('checked', false);
+      $('.realpower').prop('checked', false);
+      $('.reacpower').prop('checked', false);
+      $('.appapower').prop('checked', false);
+      $('.powerfactor').prop('checked', false);
     }
   });
  }); 
  
+ // If user clicks one measurment for one phase then select same measurement for all phases
+ $(function(){
+  $(':checkbox').on('click', function() {
+    var boxes = $(this).attr('class');
+    if ($(this).prop('checked') == true) {
+      $('.' + boxes).prop('checked', true);
+    }
+    else {
+      $('.' + boxes).prop('checked', false);
+    }
+  });
+ });
+ 
+
  // Select voltage harmonics
   $(function(){
   $('.selVoltageHarmonics').on('click', function() {
     if ($(this).prop('checked') == true) {
-      $('.voltageHarmonics').prop('checked', true);
+      $("[class^='voltageHarmonics']").prop('checked', true);
     }
     else {
-      $('.voltageHarmonics').prop('checked', false);
+      $("[class^='voltageHarmonics']").prop('checked', false);
     }
   });
  }); 
@@ -92,10 +111,10 @@ $(function(){
   $(function(){
   $('.selCurrentHarmonics').on('click', function() {
     if ($(this).prop('checked') == true) {
-      $('.currentHarmonics').prop('checked', true);
+      $("[class^='currentHarmonics']").prop('checked', true);
     }
     else {
-      $('.currentHarmonics').prop('checked', false);
+      $("[class^='currentHarmonics']").prop('checked', false);
     }
   });
  }); 
