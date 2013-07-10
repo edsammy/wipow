@@ -85,10 +85,6 @@ void user_sel_read(){
       }
     }    
   }
-  
-  // End of MySQL statement
-//  SpiSerial.write(41);  // ")"
-//  SpiSerial.write(59);  // ";"
 
   delay(300);
 }

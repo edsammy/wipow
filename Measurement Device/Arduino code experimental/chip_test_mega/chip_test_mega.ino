@@ -50,8 +50,8 @@ Major Change June 27, 2013      New communication method. Arduino sends GET requ
 #include <WiFly.h>	// **** SpiUart.cpp's  begin() function has its call to SPI.begin() commented out!! This is to allow SPI settings for communication to the Maxim chip later.
 
 
-//****Enter device name that refers to MySQL table here****////
-const String deviceName = "cogen";
+//****Set device name that refers to MySQL table here****////
+const String deviceName = "hopeman";
 /////////////////////////////////////////////////////////
 
 
@@ -68,7 +68,7 @@ const int total_functs = norm_functs + harm_functs;
 
 const int data_led = 8;  // Status LED to indicate data TX (v3)
 long timestamp;
-long interval = 10000;
+long interval = 2000;    // Set delay between readings
 
 char site[] = "www.ece.rochester.edu";    // Host server
 String GETcommands = "GET /projects/power/tmp/";    // Location of command file on server
@@ -223,6 +223,9 @@ void loop() {
   
   // Turn data collection status LED on
   digitalWrite(data_led, HIGH);
+  #ifdef DEBUG
+    Serial.print("Collecting data from MAXIM chip...");
+  #endif
   timestamp = millis();
   
   // Calls "user_sel_read.ino" which reads the "commands" array and collects the according measurements 
@@ -232,6 +235,9 @@ void loop() {
   while (!MaximWrite("004", "0000")){}
   delay(500);  
   
+  #ifdef DEBUG
+    Serial.println("Done!");
+  #endif
   // Eliminate random whitspaces in "data" string
   data.trim();
   HTTP_GET(GETdata);
@@ -262,15 +268,18 @@ void loop() {
     
   SpiSerial.write("exit", 4);				// Exit CMD mode of WiFly
   SpiSerial.write("\r", 1);
-  delay(100);
+  delay(1000);
 
-while(SpiSerial.available() > 0) {		// Flushing of WiFly output (whatever's left, exit command should get "EXIT" response from WiFly, etc...)
-  Serial.write(SpiSerial.read());
-  delay(5);
-}
+  while(SpiSerial.available() > 0) {		// Flushing of WiFly output (whatever's left, exit command should get "EXIT" response from WiFly, etc...)
+    Serial.write(SpiSerial.read());
+    delay(5);
+  }
   
   // Turn data collection status LED off
   digitalWrite(data_led, LOW);
+  
+  // If there are any errors log them on the server
+  //HTTP_GET(error_log);
   
   timestamp = millis();
   while (timestamp + interval > millis()){

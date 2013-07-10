@@ -41,21 +41,18 @@ void HTTP_GET(String request){
         if (request == GETcommands){
           user_input = currLine.substring(1);
         }
-        else if (request == GETdata){
-          if (find_text("OK", currLine) != 0){
-            error_log = currLine;
-          }
-        }
         lineCount ++;
         currLine = "";
       }
     }
 
       if (!client.connected()) {
-        Serial.println();
-        Serial.println("disconnecting.");
-      client.stop();
-      done = true;
+        #ifdef DEBUG
+          Serial.println();
+          Serial.println("disconnecting.");
+        #endif
+        client.stop();
+        done = true;
       }
     }
   return;
