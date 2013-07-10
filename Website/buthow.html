@@ -1,0 +1,107 @@
+<!DOCTYPE HTML>
+<html>
+<link href="css/indextest.css" rel="stylesheet" type="text/css" />
+<link href="css/buthow.css" rel="stylesheet" type="text/css" />
+
+<title>System Overview
+</title>
+</head>
+<body>
+  <div class="topbar">
+  
+    <h1>&nbsp;&nbsp;&nbsp;&nbsp;Data Display From Wireless Power Monitor Devices&nbsp;</h1>
+    
+  </div>
+  <div id="tabs">
+  <ul id="nav">
+      <li>
+        <a href="#">about</a>
+        <ul>
+          <li><a href="buthow.html">system overview</a></li>
+          <li><a href="#">people</a></li>
+          <li><a href="#">project goals</a></li>
+        </ul>
+      </li>
+       
+      <li>
+        <a href="#">links</a>
+          <ul>
+						<li class="a"><a href="http://www.rochester.edu">university of rochester</a></li>
+						<li><a href="http://www.ece.rochester.edu">electrical & computer engineering</a></li>
+          </ul>
+      </li>
+      <li>
+        <a href="#">contact</a>
+      </li>
+    </ul>
+  </div><!-- tabs -->
+  <div class="subcategory">
+    <h2 id="green">System Overview</h2>
+    <span id="about">The present system uses a <a href="http://www.maximintegrated.com/datasheet/index.mvp/id/6353">MAXIM Q3183</a> power meter chip, an Arduino microprocessor board, and a <a href="https://www.sparkfun.com/products/9954">WiFly shield</a>. 
+    To monitor a three-phase circuit, four current transformers are used for the A, B, and C phases and the neutral wire, and three voltage connections are required. The MAXIM chip measures and computes the usual power quantities, including power factor, real and reactive power, volt-amps, plus voltage and current harmonics up to the 21st.
+    With the chip configured to measure and transmit the power quantities and first 5 harmonics, the time required per data cycle is approximately 30 seconds. Data is uploaded to a server via the University's wireless network. The data is accessible using any modern browser. Data can be viewed on-line or data collection can be scheduled for later downloading and analysis. 
+    Two monitors are operational at present, one in the Hopeman Engineering Builing and another in the University's COGEN plant where it monitors the output of a steam-driven, 15 MWe synchronous alternator. </span>
+
+    <img style="margin-top:20px;" src="images/device/cogen.JPG"/>
+  
+  </div>
+  
+  <div class="subcategory"><a name="people"></a>
+    <h2 id="orange">Students</h2>
+    <div class="person">
+      <img class="rounded" src="http://placehold.it/150x200"/>
+      <span class="name">Lucas Crandall (2014)</span>
+    </div>
+    <div class="person">
+      <img class="rounded" src="http://placehold.it/150x200" />
+      <span class="name">Ka Fung (2013)</span>
+    </div>
+    <div class="person">
+      <img class="rounded" src="http://placehold.it/150x200" />
+      <span class="name">Pak Lam Yung (2013)</span>
+    </div>
+    <div class="person">
+      <img class="rounded" src="http://placehold.it/150x200" />
+      <span class="name">Will Kung (2014)</span>
+    </div>
+    <div class="person">
+      <img class="rounded" src="http://placehold.it/150x200" />
+      <span class="name">James Meyers (2013)</span>
+    </div>
+    <div class="person">
+      <img class="rounded" src="http://placehold.it/150x200" />
+      <span class="name">Eddie Samuels (2015)</span>
+    </div>
+    <div class="person">
+      <img class="rounded" src="http://placehold.it/150x200" />
+      <span class="name">Pak Lam Yung (2013)</span>
+    </div>
+    <div id="faculty">
+      <h2 id="orange">Staff</h2>
+      <div class="member">John Simonson<dd>programming assistance</dd></div>
+      <div class="member">Scott Attili & John Nastasi<dd>device installation</dd></div>
+      <div class="member">Doug Bentley<dd>network assistance</dd></div>
+      <div class="member">Paul Osborne<dd>mechanical assembly</dd></div>
+    </div>
+  </div>
+  
+  <div class="subcategory"><a name="goals"></a>
+    <h2 id="red">Goals</h2>
+    <ul>
+      <li>System re-design: using one DC supply level & scavenges power from monitored circuit irrespective of AC voltage level</li>
+
+      <li>System re-design: higher speed operation when measuring harmonics</li>
+
+      <li>Create a secure system that can be used to monitor a 3-phase circuit anywhere on campus</li>
+      
+      <li>Implement a system using the cloud for data storage</li>
+    </ul>
+  </div>
+  
+  <div class="footer">
+    <div class="footerborder"></div>
+      <div class="footer_contents">University of Rochester, Department of Electrical & Computer Engineering  &nbsp;&nbsp;&nbsp;&#169; 2012 - 2013
+      </div>
+	</div>	
+</body>
+</html>

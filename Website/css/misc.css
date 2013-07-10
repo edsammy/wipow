@@ -4,7 +4,7 @@ height:100%;
 	min-width: 100%;}
 
 			
-
+#schedulecomplete{color:rgb(8, 106, 135);font-size:18px;width:480px;border-radius:8px;height:120px;}
 
 #centerall{margin-top:auto;margin-bottom:auto;}
 
@@ -38,20 +38,21 @@ height:100%;
         }
 			
 		#picture{position:absolute;margin-left:350px;opacity:0.2;margin-top:-218px;}
-		#picture:hover{opacity:0.5;}
+		
 		#centering{left:50%;width:610px;height:620px;margin-left:-300px;position:absolute;margin-top:100px;}	
 			
 #head{width:700px;margin-top:-15px;margin-left:-15px;height:400px;overflow:hidden;position:absolute;}
 #topbar{min-width:100%;width:100%;background-color:#086A87; height:85px;top:0;border-bottom: 1px solid #ddd;
 				box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.4);position:absolute;left:0;padding-bottom:0px;padding-left:33px;}
 				
-				#phpdisplay{font-weight:bold;width:600px;margin-left:2px; height:28px;position:absolute;margin-top:10px;font-size:16px;border-radius:4px;background:#ccc;border:1px #bbb solid;}
+				#phpdisplay{width:600px;margin-left:20px; height:28px;position:absolute;margin-top:100px;font-size:16px;border-radius:4px;border:0px #bbb solid;}
 				
-			#timecontain{width:500px;height:200px; border-radius:5px;position:absolute;margin-top:65px;overflow:hidden;margin-left:96px;}
-			#start{font-size:30px;width:700px;height:45px;margin-left:10px;margin-top:10px;}
-			#end{font-size:30px;width:700px;height:4px;margin-left:10px;display:block;}
-			#formcontain{width:310px;height:270px;margin-left:20px;position:absolute;margin-top:200px;border:0px rgb(8, 106, 135) solid;border-radius:5px;display:block;padding:0px;}
+			#timecontain{width:500px;height:400px; border-radius:5px;position:absolute;margin-top:180px;overflow:hidden;margin-left:410px;}
+			#start{font-size:30px;width:700px;height:45px;margin-left:60px;margin-top:105px;}
+			#end{font-size:30px;width:700px;margin-top:50px;height:4px;margin-left:60px;display:block;}
+			#formcontain{width:310px;height:270px;margin-left:130px;position:absolute;margin-top:270px;border:0px rgb(8, 106, 135) solid;border-radius:5px;display:block;padding:0px;}
 			#email{margin-left:20px;width:215px;height:22px;margin-top:5px;position:absolute;font-size:12px;color:#4B4B4B;background:#FAFAFA;}
 			
-			.info{padding: 0px 15px;width:570px;right:0; background:#FFF;height:50px;position:absolute;margin-top:470px;font-size:16px;border-radius:4px;background:#ccc;border:1px #bbb solid;}
-			.infocontain{margin-left:auto;margin-right:auto;margin-top:3px;text-align:center;position:relative;}
+			.info{padding: 0px 15px;width:900px;height:50px;position:absolute;margin-top:130px;font-size:22px;border-radius:4px;border:0px #bbb solid;}
+			.infocontain{margin-left:92px;margin-top:30px;text-align:left;position:relative;}
+			.infocontain1{margin-left:96px;margin-top:40px;text-align:left;position:relative;}

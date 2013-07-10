@@ -1,0 +1,57 @@
+
+.subcategory{
+  padding:100px;
+  width: 850px;
+  margin-left: auto;
+  margin-right:auto;
+  margin-bottom:70px;
+}
+
+#about{
+  line-height:150%;
+  }
+
+a, a:hover, a:active, a:visited {
+	text-decoration: underline;
+	font-family: tahoma;
+	cursor:default;
+	
+}
+
+#green{color: #34A330;}
+#orange{color: #FF9100;}
+#red{color: #CD3535;}
+
+.name{
+  display:block;
+  width:150px;
+  text-align:center;
+  margin-bottom:20px;
+}
+  
+.person{
+  width:200px;
+  display:inline-block;
+}
+
+img {
+  height: auto;
+  max-width: 850px;
+}  
+ 
+.rounded{
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  }
+  
+dd {
+    margin: 0;
+    font-size:0.9em;
+    font-style:italic;
+}
+
+.member{
+  margin-bottom: 20px;
+  margin-left:10px;
+}
