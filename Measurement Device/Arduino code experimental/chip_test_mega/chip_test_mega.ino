@@ -24,11 +24,6 @@ Major Change June 27, 2013      New communication method. Arduino sends GET requ
 			////////////
 			// TODOs //
 			////////////
-			
-//TODO: April 5, 2013 update works, but is very slow. Is there a way to increase speed/use less DSP cycles to get harmonic measurment registers ready?
-//		As far as I am concerned (4/9/2013), I don't have any ideas looking at the datasheet. Email MAXIM support? (I might do that soon)
-//              ***The best way to speed up data collection is to only collect the measurements you want to monitor. Will investigate further into MAXIM chip registers to see if there are other options***
-
 //TODO: Investigate the averaging filter register 0x030. 
 //		It is currently set to zero (no averaging to allow a measurement register to completely change to a new value every DSP cycle)
 //		However, the chip does not appear to behave as mentioned above. (Values in measurement registers still seem to be averaged when less "dspread()"'s are used)
@@ -51,7 +46,7 @@ Major Change June 27, 2013      New communication method. Arduino sends GET requ
 
 
 //****Set device name that refers to MySQL table here****////
-const String deviceName = "hopeman";
+const String deviceName = "cogen";
 /////////////////////////////////////////////////////////
 
 
@@ -67,6 +62,7 @@ const int harm_functs = 33;   // number of harmonic MAXIM measurements
 const int total_functs = norm_functs + harm_functs;
 
 const int data_led = 8;  // Status LED to indicate data TX (v3)
+const int pulsePin = 9;
 long timestamp;
 long interval = 2000;    // Set delay between readings
 
@@ -204,8 +200,18 @@ void dspready(){          // This function is called to wait until the chip's DS
     while (!MaximWrite("004", "0000")){}
 }
 
+// Heartbeat function used to stop the watchdog timer from tripping
+void heartbeat() {
+  // Sink current to drain charge from watchdog circuit
+  pinMode(pulsePin, OUTPUT);
+  digitalWrite(pulsePin, LOW) ;
+  delay(300);
+  // Return to high-Z
+  pinMode(pulsePin, INPUT);
+  Serial.println("Heartbeat sent");
+}
+
 void loop() {
-  
   #ifdef DEBUG
     Serial.print("Getting user commands from web...");
   #endif
@@ -280,12 +286,14 @@ void loop() {
   
   // If there are any errors log them on the server
   //HTTP_GET(error_log);
+ 
+  heartbeat();
   
   timestamp = millis();
   while (timestamp + interval > millis()){
   // Delay between readings
   }
-
+  
 }//////////// END OF LOOP /////////////
 
 
