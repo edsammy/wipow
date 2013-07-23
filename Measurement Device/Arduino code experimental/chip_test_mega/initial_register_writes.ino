@@ -36,59 +36,59 @@ void initial_register_writes(){
   }
   */
   //Serial.print("writing to voltage gain A:  ");
-  while (!MaximWrite("132", "3FB0")){    //reg 132
+  while (!MaximWrite("132", "4001")){    //reg 132
     //Serial.print("writing to voltage gain A:  ");
   }
   
   
     ////Serial.print("writing to voltage gain B:  ");
-  while (!MaximWrite("21E", "410E")){    //reg 21E
+  while (!MaximWrite("21E", "4017")){    //reg 21E
     ////Serial.print("writing to voltage gain B:  ");
   }
   
   
     ////Serial.print("writing to voltage gain C:  ");
-  while (!MaximWrite("30A", "3F6A")){    //reg 30A
+  while (!MaximWrite("30A", "3F72")){    //reg 30A
     ////Serial.print("writing to voltage gain C:  ");
   }
   
   
   ////Serial.print("writing to current gain A:  ");
-  while (!MaximWrite("130", "3F1B")){    //reg 130
+  while (!MaximWrite("130", "3D82")){    //reg 130
     ////Serial.print("writing to current gain A:  ");
   }
   
     
   ////Serial.print("writing to current gain B:  ");
-  while (!MaximWrite("21C", "3F1E")){    //reg 21C
+  while (!MaximWrite("21C", "41BB")){    //reg 21C
     ////Serial.print("writing to current gain B:  ");
   }
   
     
   ////Serial.print("writing to current gain C:  ");
-  while (!MaximWrite("308", "3F1E")){    //reg 308
+  while (!MaximWrite("308", "419C")){    //reg 308
     ////Serial.print("writing to current gain C:  ");
   }
   
     
   ////Serial.print("writing to current gain N:  ");
-  while (!MaximWrite("12E", "3F30")){    //reg 12E
+  while (!MaximWrite("12E", "3BF1")){    //reg 12E
     ////Serial.print("writing to current gain N:  ");
   }
 
   ////Serial.print("writing to volt conversion coeff:  ");
-  while (!MaximWrite("014", "81A0")){    //reg 014   81f1
+  while (!MaximWrite("014", "4DD0")){    //reg 014   V_FS=33420V/V, VOLT_LSB=10^-7
     ////Serial.print("writing to volt conversion coeff:  ");
   }
   
     //Serial.print("writing to current conversion coeff:  ");
-  while (!MaximWrite("016", "0729")){    //reg 016
+  while (!MaximWrite("016", "68C6")){    //reg 016    I_FS=4500A/V, AMP_LSB=10^-8
     //Serial.print("writing to current conversion coeff:  ");
   }
   
   
     //Serial.print("writing to power conversion coeff:  ");
-  while (!MaximWrite("018", "0F8E")){    //reg 018
+  while (!MaximWrite("018", "88C7")){    //reg 018    PWR_LSB=10^-6
     //Serial.print("writing to power conversion coeff:  ");
   }
   
@@ -117,9 +117,9 @@ void initial_register_writes(){
   
   
   //Serial.print("writing to SCAN_IN:  ");
-  //while (!MaximWrite("00E", "60")){      //reg 00E
+  while (!MaximWrite("00E", "60")){      //reg 00E
     //Serial.print("writing to SCAN_IN:  ");
-  //}
+  }
   
   
   //Serial.print("writing to harmonic reg:  ");

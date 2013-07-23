@@ -20,6 +20,8 @@ Change May 13, 2013:		Changed the way THD measurement is interpreted. The way th
 
 Major Change June 27, 2013      New communication method. Arduino sends GET request containing collected data which is parsed by "../website/arduino_DBconnect.php" 
 
+Change July 22, 2013:           Put in hardware watchdog circuit as well as supporting software
+
 *****************************************************************************************************************/
 			////////////
 			// TODOs //
@@ -158,21 +160,21 @@ void setup() {
   
   delay(1000);
   
-  SpiSerial.write("$$$", 3);		// Go to CMD in WiFly
-  delay(500);
-    while(SpiSerial.available() > 0) {
-    Serial.write(SpiSerial.read());
-    delay(50);
-  }
-
-  SpiSerial.write("join", 4);		// Join the pre-set network "Roving1"
-  SpiSerial.write("\r", 1);	        // ** Wifly is already set to auto-join "Roving1".
-  delay(3000);				//    This is just incase it doesn't.
-    while(SpiSerial.available() > 0) {
-    Serial.write(SpiSerial.read());
-    delay(50);
-  }
-  
+//  SpiSerial.write("$$$", 3);		// Go to CMD in WiFly
+//  delay(500);
+//    while(SpiSerial.available() > 0) {
+//    Serial.write(SpiSerial.read());
+//    delay(50);
+//  }
+//
+//  SpiSerial.write("join", 4);		// Join the pre-set network "Roving1"
+//  SpiSerial.write("\r", 1);	        // ** Wifly is already set to auto-join "Roving1".
+//  delay(3000);				//    This is just incase it doesn't.
+//    while(SpiSerial.available() > 0) {
+//    Serial.write(SpiSerial.read());
+//    delay(50);
+//  }
+  WiFly.sendCommand("join", false, "DeAuth");
   String IP = WiFly.ip();
   Serial.println();
   Serial.println(IP);
@@ -212,6 +214,8 @@ void heartbeat() {
 }
 
 void loop() {
+  heartbeat();
+  
   #ifdef DEBUG
     Serial.print("Getting user commands from web...");
   #endif
@@ -258,36 +262,34 @@ void loop() {
   #endif
   
 // Make sure that the WiFly is disconnect and the CMD mode is exited so the device does not lock up
-  SpiSerial.write("$$$", 3);				// CMD mode of WiFly
-  delay(300);
-  while(SpiSerial.available() > 0) {
-    Serial.write(SpiSerial.read());
-    delay(5);
-  }
-  SpiSerial.write("close", 5);			// Tell WiFly to close the HTTP connection since we should have finished transmitting the data.
-  SpiSerial.write("\r", 2);
-  delay(100);
-  while(SpiSerial.available() > 0) {
-    Serial.write(SpiSerial.read());
-    delay(5);
-  }
-    
-  SpiSerial.write("exit", 4);				// Exit CMD mode of WiFly
-  SpiSerial.write("\r", 1);
-  delay(1000);
-
-  while(SpiSerial.available() > 0) {		// Flushing of WiFly output (whatever's left, exit command should get "EXIT" response from WiFly, etc...)
-    Serial.write(SpiSerial.read());
-    delay(5);
-  }
+//  SpiSerial.write("$$$", 3);				// CMD mode of WiFly
+//  delay(300);
+//  while(SpiSerial.available() > 0) {
+//    Serial.write(SpiSerial.read());
+//    delay(5);
+//  }
+//  SpiSerial.write("close", 5);			// Tell WiFly to close the HTTP connection since we should have finished transmitting the data.
+//  SpiSerial.write("\r", 2);
+//  delay(100);
+//  while(SpiSerial.available() > 0) {
+//    Serial.write(SpiSerial.read());
+//    delay(5);
+//  }
+//    
+//  SpiSerial.write("exit", 4);				// Exit CMD mode of WiFly
+//  SpiSerial.write("\r", 1);
+//  delay(1000);
+//
+//  while(SpiSerial.available() > 0) {		// Flushing of WiFly output (whatever's left, exit command should get "EXIT" response from WiFly, etc...)
+//    Serial.write(SpiSerial.read());
+//    delay(5);
+//  }
   
   // Turn data collection status LED off
   digitalWrite(data_led, LOW);
   
   // If there are any errors log them on the server
   //HTTP_GET(error_log);
- 
-  heartbeat();
   
   timestamp = millis();
   while (timestamp + interval > millis()){
