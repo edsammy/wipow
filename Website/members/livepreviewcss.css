@@ -1,0 +1,112 @@
+html {
+
+}
+
+body{
+
+}
+.formcontain{float:right;width:100%;height:300px;position:absolute;overflow:hidden;background: #000;margin:0 auto;}
+
+
+				h1 {
+	color: #FFFFFF;	
+	margin-top:30px;
+	white-space:nowrap;
+	overflow: hidden;	
+	font-size:29px;
+	margin-left:41px;
+	display:inline-block;
+}
+
+#deviceselect2{margin-top:120px;
+				margin-left:120px;
+				width:500px;}
+				
+#arrows{
+				margin-left: 10%;
+}
+
+#bigboxtitle {
+				color: rgb(8,106,135);
+			}			
+.centered { 
+				text-align: center;
+			}
+#deviceselect1{
+				position: absolute;
+				
+				display:none;
+				margin-top:120px;
+				width:600px;
+				line-height:90%;
+				margin-left:150px;
+				
+}
+#phaseboxa {
+				color: #000000;
+				border-color: #000000;
+			}
+#phaseboxb {
+				color: #FF0000;
+				border-color: #FF0000;
+			}
+#phaseboxc {
+				color: #0000FF;
+				border-color: #0000FF;
+			}
+#oldbutton{
+				margin-left: 20px;
+				margin-top: 10px;
+}
+.phaseallcheck {
+				margin-left: 27px;
+				margin-top: 1%;
+			}
+.harmallcheck {
+				margin-left: 27px;
+				margin-top: 1%;
+			}
+.combinecheckbox {
+				margin-top:    5px;
+				margin-bottom: 5px;
+				margin-left:   25px;
+			}
+.warn {
+				color: rgb(52,163,48);
+				font-size: 12;
+			}
+#timefield {
+				margin-left: 20px;
+display:none;
+				width: 50%;
+			}
+#timefield2{
+				margin-left: 72px;
+				display:none;
+			
+				width: 600px;
+				position:absolute;
+				margin-top:200px;
+				border-radius:5px;
+				
+			}
+.viewchoice {
+				position: relative;
+				margin-left: 20px;
+				top: -10px;
+				width: 50%;
+			}
+.atext {
+				color: #000000;
+			}
+.btext {
+				color: #FF0000;
+			}
+.ctext {
+				color: #0000FF;
+			}
+#selectfield{
+				display:none;
+				margin-left: 20px;
+				width: 50%;
+}
