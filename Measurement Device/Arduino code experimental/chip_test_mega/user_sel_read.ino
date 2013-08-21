@@ -106,49 +106,49 @@ void freq_r(){
 void volta_r(){
   //SpiSerial.write("VoltA: ", 7);
   while(!MaximRead("831",8)){};
-  voltage[0] = (float)(((long)((unsigned long)lower_read >> 16))|(upper_read << 16))*(65536)/1000000000;
+  voltage[0] = (float)(((long)((unsigned long)lower_read >> 16))|(upper_read << 16))*(65536)/10000000;
   dtostrf(voltage[0],10,3,buf);
 }
   
 void voltb_r(){
   //SpiSerial.write("VoltB: ", 7);
   while(!MaximRead("832",8)){};
-  voltage[1] = (float)(((long)((unsigned long)lower_read >> 16))|(upper_read << 16))*(65536)/1000000000;
+  voltage[1] = (float)(((long)((unsigned long)lower_read >> 16))|(upper_read << 16))*(65536)/10000000;
   dtostrf(voltage[1],10,3,buf);
 }
   
 void voltc_r(){
   //SpiSerial.write("VoltC: ", 7);
   while(!MaximRead("834",8)){};
-  voltage[2] = (float)(((long)((unsigned long)lower_read >> 16))|(upper_read << 16))*(65536)/1000000000;
+  voltage[2] = (float)(((long)((unsigned long)lower_read >> 16))|(upper_read << 16))*(65536)/10000000;
   dtostrf(voltage[2],10,3,buf);
 }
   
 void curra_r(){
   //SpiSerial.write("CurrA: ", 7);
   while(!MaximRead("841",8)){};
-  current[0] = (float)(((long)((unsigned long)lower_read >> 16))|(upper_read << 16))*(65536)/1000000000;
+  current[0] = (float)(((long)((unsigned long)lower_read >> 16))|(upper_read << 16))*(65536)/100000000;
   dtostrf(current[0],10,3,buf);
 }
   
 void currb_r(){
   //SpiSerial.write("CurrB: ", 7);
   while(!MaximRead("842",8)){};
-  current[1] = (float)(((long)((unsigned long)lower_read >> 16))|(upper_read << 16))*(65536)/1000000000;
+  current[1] = (float)(((long)((unsigned long)lower_read >> 16))|(upper_read << 16))*(65536)/100000000;
   dtostrf(current[1],10,3,buf);
 }
   
 void currc_r(){
   //SpiSerial.write("CurrC: ", 7);
   while(!MaximRead("844",8)){};
-  current[2] = (float)(((long)((unsigned long)lower_read >> 16))|(upper_read << 16))*(65536)/1000000000;
+  current[2] = (float)(((long)((unsigned long)lower_read >> 16))|(upper_read << 16))*(65536)/100000000;
   dtostrf(current[2],10,3,buf);
 }
   
 void currn_r(){          
   //SpiSerial.write("CurrN: ", 7);
   while(!MaximRead("840",8)){};
-  current[3] = (float)(((long)((unsigned long)lower_read >> 16))|(upper_read << 16))*(65536)/1000000000;
+  current[3] = (float)(((long)((unsigned long)lower_read >> 16))|(upper_read << 16))*(65536)/100000000;
   dtostrf(current[3],10,3,buf);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////
